@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FATHOM</title>
 <meta name="description" content="A precision instrument.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath fill='%23181818' d='M39.96 7.84C22.07 7.84 7.84 22.23 7.84 40.08c0 17.86 14.23 32.07 32.12 32.07s32.2-14.2 32.2-32.07c0-17.87-14.31-32.24-32.2-32.24zm10.37 49.85L41.67 38.41c-0.26-0.54-0.63-0.98-1.52-0.98h-0.89c-0.8 0-1.26 0.44-1.52 0.98L29.46 57.6c-5.96-3.59-9.97-10.09-9.97-17.52 0-11.26 9.22-20.63 20.48-20.63s20.57 9.37 20.57 20.63c0 7.48-4.12 14.03-10.2 17.61z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath fill='%23232322' d='M39.96 7.84C22.07 7.84 7.84 22.23 7.84 40.08c0 17.86 14.23 32.07 32.12 32.07s32.2-14.2 32.2-32.07c0-17.87-14.31-32.24-32.2-32.24zm10.37 49.85L41.67 38.41c-0.26-0.54-0.63-0.98-1.52-0.98h-0.89c-0.8 0-1.26 0.44-1.52 0.98L29.46 57.6c-5.96-3.59-9.97-10.09-9.97-17.52 0-11.26 9.22-20.63 20.48-20.63s20.57 9.37 20.57 20.63c0 7.48-4.12 14.03-10.2 17.61z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -35,26 +35,23 @@
     --space-5: 24px;
     --space-6: 32px;
     --space-7: 48px;
-    --space-8: 64px;
-    --space-9: 96px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
-    height: 100%;
     background: var(--paper-300);
     color: var(--ink-900);
     font-family: var(--font-mono);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow: hidden;
   }
 
   body {
     display: grid;
     grid-template-rows: auto 1fr auto;
     min-height: 100vh;
+    min-height: 100dvh;
     padding: var(--space-7);
   }
 
@@ -78,18 +75,6 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-
-  /* Transition out of sweep: ease to a stop at 0 deg (wedge pointing down) */
-  @keyframes sweep-ease-out {
-    from { transform: rotate(var(--sweep-angle, 0deg)); }
-    to   { transform: rotate(360deg); }
-  }
-
-  /* RADAR PPI: trailing wedge of fading marine sweeps behind the beam.
-     Implemented as a circular div with a conic-gradient. Rotates with the mark.
-     The brightest edge of the gradient sits where the wedge points (down, 180deg
-     in conic-gradient coordinates where 0deg is at the top). The trail fades
-     counterclockwise behind the beam since the sweep is clockwise. */
 
   /* SOUNDING: single continuous signal cycle.
      One line is emitted from the disc, descends smoothly to the seafloor,
@@ -131,10 +116,35 @@
     inset: 0;
     pointer-events: none;
     z-index: 100;
-    opacity: 0.028;
+    opacity: 0.05;
     mix-blend-mode: multiply;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
     background-size: 200px 200px;
+  }
+
+  /* ===================== STARFIELD ===================== */
+
+  /* Dense fine-grain texture behind everything else.
+     Reads as surface tooth rather than discrete elements. Translates
+     slightly with mouse position (desktop) or tap (mobile) for subtle
+     parallax. */
+  .starfield {
+    position: fixed;
+    inset: -20px;  /* extra room around viewport for parallax travel */
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .starfield.tracking {
+    /* When mouse is actively moving, snappier follow. */
+    transition: transform 200ms cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .star {
+    fill: var(--ink-300);
   }
 
   /* ===================== HEADER ===================== */
@@ -153,6 +163,13 @@
     display: block;
   }
 
+  .header-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+  }
+
   .timestamp {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -160,6 +177,22 @@
     letter-spacing: 0.04em;
     color: var(--ink-500);
     font-variant-numeric: tabular-nums;
+  }
+
+  .readout {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--ink-400);
+    font-variant-numeric: tabular-nums;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 600ms ease;
+  }
+
+  .readout.live {
+    opacity: 1;
   }
 
   /* ===================== CENTER ===================== */
@@ -198,59 +231,13 @@
     animation: sweep 14s linear infinite;
   }
 
-  /* Radar trail: circular conic-gradient sweep that rotates with the mark.
-     The trail fills 80% of the mark-stage, centered. We center via an absolutely
-     positioned wrapper so the rotation animation can use a clean transform that
-     doesn't fight the translate. */
-  .radar-trail-wrap {
-    position: absolute;
-    inset: 10%;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .radar-trail {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    transform-origin: 50% 50%;
-    opacity: 0;
-    /* The conic gradient: bright marine at the beam direction (180deg, since
-       the wedge in the brand mark points down at rotation 0), fading
-       counterclockwise across roughly 70deg of arc (the trail). */
-    background: conic-gradient(
-      from 0deg,
-      transparent 0deg,
-      transparent 110deg,
-      rgba(44, 95, 124, 0.02) 130deg,
-      rgba(44, 95, 124, 0.10) 155deg,
-      rgba(44, 95, 124, 0.22) 175deg,
-      rgba(44, 95, 124, 0.30) 180deg,
-      transparent 182deg,
-      transparent 360deg
-    );
-    /* Mask to a circle so the gradient stays inside the disc shape */
-    -webkit-mask: radial-gradient(circle, black 0 49%, transparent 50%);
-            mask: radial-gradient(circle, black 0 49%, transparent 50%);
-  }
-
-  /* The trail rotates synchronously with the mark during sweep phase.
-     Same duration as the mark sweep so they stay locked together. */
-  .mark-stage.phase-sweep .radar-trail {
-    opacity: 1;
-    animation: sweep 14s linear infinite;
-  }
-
   /* ===================== SOUNDING PULSES ===================== */
 
-  /* Pulse lines descend from the disc's bottom edge into the negative
+  /* Pulse line descends from the disc's bottom edge into the negative
      space below the mark. The disc spans y=7.8 to y=72.2 in the 80-unit
-     SVG viewBox, so the disc's bottom edge is at ~90% of the mark-stage
-     height (since the SVG fills the stage). */
-  /* Pulse lines descend from the disc's bottom edge into the negative
-     space below the mark. Three identical lines fire sequentially, one
-     at a time. Each is an independent signal that descends, bounces, and
-     returns before the next is emitted. */
+     SVG viewBox, so its bottom edge sits at ~90% of the mark-stage height.
+     One line per sounding phase: descends, touches the seafloor at zero
+     velocity, accelerates back up wider and fainter as the diffused echo. */
   .pulse-line {
     position: absolute;
     left: 50%;
@@ -347,11 +334,13 @@
 
   @media (prefers-reduced-motion: reduce) {
     .mark-stage.phase-sweep .mark-rotating,
-    .mark-stage.phase-sweep .radar-trail,
     .mark-stage.phase-sound .pulse-line {
       animation: none !important;
     }
-    .radar-trail { opacity: 0 !important; }
+    .starfield {
+      transition: none !important;
+      transform: none !important;
+    }
     .hairline {
       animation: none;
       transform: scaleX(1);
@@ -367,6 +356,8 @@
 
   <div class="noise" aria-hidden="true"></div>
 
+  <svg class="starfield" id="starfield" aria-hidden="true" preserveAspectRatio="none"></svg>
+
   <div class="hairline hairline-top"></div>
   <div class="hairline hairline-bottom"></div>
 
@@ -377,7 +368,7 @@
           <path d="M30.6667 3.33325H3.33333V30.6666H30.6667V3.33325Z" fill="white"/>
         </mask>
         <g mask="url(#wm-mask0)">
-          <path d="M16.9837 3.33325C9.3784 3.33325 3.33333 9.44789 3.33333 17.0358C3.33333 24.6237 9.3784 30.6666 16.9837 30.6666C24.589 30.6666 30.6667 24.6302 30.6667 17.0358C30.6667 9.44139 24.5824 3.33325 16.9837 3.33325ZM21.3902 24.5194L17.7083 16.3252C17.5973 16.0971 17.4406 15.908 17.062 15.908H16.6834C16.3439 15.908 16.1481 16.0971 16.0371 16.3252L12.5184 24.4803C9.9855 22.9549 8.28166 20.1909 8.28166 17.0358C8.28166 12.251 12.1986 8.26799 16.9837 8.26799C21.7688 8.26799 25.7249 12.251 25.7249 17.0358C25.7249 20.217 23.9753 23.0005 21.3902 24.5194Z" fill="#181818"/>
+          <path d="M16.9837 3.33325C9.3784 3.33325 3.33333 9.44789 3.33333 17.0358C3.33333 24.6237 9.3784 30.6666 16.9837 30.6666C24.589 30.6666 30.6667 24.6302 30.6667 17.0358C30.6667 9.44139 24.5824 3.33325 16.9837 3.33325ZM21.3902 24.5194L17.7083 16.3252C17.5973 16.0971 17.4406 15.908 17.062 15.908H16.6834C16.3439 15.908 16.1481 16.0971 16.0371 16.3252L12.5184 24.4803C9.9855 22.9549 8.28166 20.1909 8.28166 17.0358C8.28166 12.251 12.1986 8.26799 16.9837 8.26799C21.7688 8.26799 25.7249 12.251 25.7249 17.0358C25.7249 20.217 23.9753 23.0005 21.3902 24.5194Z" fill="#232322"/>
         </g>
       </g>
       <g clip-path="url(#wm-clip1)">
@@ -386,12 +377,12 @@
             <path d="M144.689 8.5H48.0013V25.5H144.689V8.5Z" fill="white"/>
           </mask>
           <g mask="url(#wm-mask1)">
-            <path d="M58.3736 8.73511H48.4653C48.1977 8.73511 48.0013 8.94999 48.0013 9.18514V24.8147C48.0013 25.0499 48.1977 25.2648 48.4653 25.2648H50.7062C50.9487 25.2648 51.1702 25.054 51.1702 24.8147V18.8427H57.1821C57.4246 18.8427 57.6462 18.6318 57.6462 18.3926V16.4587C57.6462 16.2235 57.4288 16.0087 57.1821 16.0087H51.1661V11.5691H58.3736C58.6412 11.5691 58.8377 11.3583 58.8377 11.1191V9.18514C58.8377 8.94999 58.6412 8.73511 58.3736 8.73511Z" fill="#181818"/>
-            <path d="M67.5503 8.75948C67.4751 8.61758 67.3789 8.5 67.1363 8.5H66.8939C66.6765 8.5 66.5511 8.61758 66.48 8.75948L58.9088 24.6486C58.7625 24.9567 58.9589 25.2608 59.3226 25.2608H61.4423C61.8311 25.2608 62.0526 25.0256 62.1488 24.7905L63.3403 22.2403H70.6189L71.8104 24.7905C71.9819 25.1229 72.1533 25.2608 72.5169 25.2608H74.6366C75.0003 25.2608 75.1968 24.9527 75.0505 24.6486L67.5503 8.75948ZM64.5318 19.6212L66.919 14.4275H66.9943L69.4274 19.6212H64.536H64.5318Z" fill="#181818"/>
-            <path d="M85.565 8.73511H74.9251C74.6576 8.73511 74.461 8.94594 74.461 9.18514V11.1191C74.461 11.3542 74.6576 11.5691 74.9251 11.5691H78.6501V24.8147C78.6501 25.0499 78.8675 25.2648 79.1141 25.2648H81.3801C81.6226 25.2648 81.8442 25.054 81.8442 24.8147V11.5691H85.5692C85.8368 11.5691 86.0332 11.3583 86.0332 11.1191V9.18514C86.0332 8.94999 85.8368 8.73511 85.5692 8.73511H85.565Z" fill="#181818"/>
-            <path d="M102.388 8.73511H100.147C99.8798 8.73511 99.6833 8.94594 99.6833 9.18514V15.441H91.7483V9.18514C91.7483 8.94999 91.5519 8.73511 91.2842 8.73511H89.0183C88.7759 8.73511 88.5542 8.94594 88.5542 9.18514V24.8147C88.5542 25.0499 88.7716 25.2648 89.0183 25.2648H91.2842C91.5519 25.2648 91.7483 25.054 91.7483 24.8147V18.2994H99.6833V24.8147C99.6833 25.0499 99.8798 25.2648 100.147 25.2648H102.388C102.631 25.2648 102.852 25.054 102.852 24.8147V9.18514C102.852 8.94999 102.635 8.73511 102.388 8.73511Z" fill="#181818"/>
-            <path d="M114.876 8.5C110.005 8.5 106.134 12.303 106.134 17.0223C106.134 21.7416 110.005 25.5 114.876 25.5C119.747 25.5 123.639 21.7457 123.639 17.0223C123.639 12.2989 119.747 8.5 114.876 8.5ZM117.702 21.6767L115.344 16.5804C115.273 16.4385 115.173 16.3209 114.93 16.3209H114.688C114.471 16.3209 114.345 16.4385 114.274 16.5804L112.021 21.6524C110.398 20.7037 109.307 18.9846 109.307 17.0223C109.307 14.0464 111.816 11.5692 114.88 11.5692C117.945 11.5692 120.478 14.0464 120.478 17.0223C120.478 19.0008 119.358 20.732 117.702 21.6767Z" fill="#181818"/>
-            <path d="M144.672 24.7216L141.8 8.85273C141.775 8.66217 141.628 8.5 141.361 8.5H140.972C140.755 8.5 140.629 8.59325 140.558 8.73515L135.203 19.8806H135.132L129.772 8.73515C129.701 8.59325 129.554 8.5 129.358 8.5H128.969C128.702 8.5 128.555 8.66623 128.53 8.85273L125.633 24.7175C125.583 25.0499 125.779 25.2608 126.097 25.2608H128.288C128.505 25.2608 128.702 25.0702 128.727 24.9081L130.14 15.9601H130.211L134.521 25.2405C134.596 25.3824 134.718 25.5 134.935 25.5H135.374C135.592 25.5 135.738 25.3824 135.788 25.2405L140.048 15.9601H140.119L141.557 24.9081C141.608 25.0743 141.8 25.2608 142.021 25.2608H144.237C144.555 25.2608 144.747 25.0499 144.676 24.7175L144.672 24.7216Z" fill="#181818"/>
+            <path d="M58.3736 8.73511H48.4653C48.1977 8.73511 48.0013 8.94999 48.0013 9.18514V24.8147C48.0013 25.0499 48.1977 25.2648 48.4653 25.2648H50.7062C50.9487 25.2648 51.1702 25.054 51.1702 24.8147V18.8427H57.1821C57.4246 18.8427 57.6462 18.6318 57.6462 18.3926V16.4587C57.6462 16.2235 57.4288 16.0087 57.1821 16.0087H51.1661V11.5691H58.3736C58.6412 11.5691 58.8377 11.3583 58.8377 11.1191V9.18514C58.8377 8.94999 58.6412 8.73511 58.3736 8.73511Z" fill="#232322"/>
+            <path d="M67.5503 8.75948C67.4751 8.61758 67.3789 8.5 67.1363 8.5H66.8939C66.6765 8.5 66.5511 8.61758 66.48 8.75948L58.9088 24.6486C58.7625 24.9567 58.9589 25.2608 59.3226 25.2608H61.4423C61.8311 25.2608 62.0526 25.0256 62.1488 24.7905L63.3403 22.2403H70.6189L71.8104 24.7905C71.9819 25.1229 72.1533 25.2608 72.5169 25.2608H74.6366C75.0003 25.2608 75.1968 24.9527 75.0505 24.6486L67.5503 8.75948ZM64.5318 19.6212L66.919 14.4275H66.9943L69.4274 19.6212H64.536H64.5318Z" fill="#232322"/>
+            <path d="M85.565 8.73511H74.9251C74.6576 8.73511 74.461 8.94594 74.461 9.18514V11.1191C74.461 11.3542 74.6576 11.5691 74.9251 11.5691H78.6501V24.8147C78.6501 25.0499 78.8675 25.2648 79.1141 25.2648H81.3801C81.6226 25.2648 81.8442 25.054 81.8442 24.8147V11.5691H85.5692C85.8368 11.5691 86.0332 11.3583 86.0332 11.1191V9.18514C86.0332 8.94999 85.8368 8.73511 85.5692 8.73511H85.565Z" fill="#232322"/>
+            <path d="M102.388 8.73511H100.147C99.8798 8.73511 99.6833 8.94594 99.6833 9.18514V15.441H91.7483V9.18514C91.7483 8.94999 91.5519 8.73511 91.2842 8.73511H89.0183C88.7759 8.73511 88.5542 8.94594 88.5542 9.18514V24.8147C88.5542 25.0499 88.7716 25.2648 89.0183 25.2648H91.2842C91.5519 25.2648 91.7483 25.054 91.7483 24.8147V18.2994H99.6833V24.8147C99.6833 25.0499 99.8798 25.2648 100.147 25.2648H102.388C102.631 25.2648 102.852 25.054 102.852 24.8147V9.18514C102.852 8.94999 102.635 8.73511 102.388 8.73511Z" fill="#232322"/>
+            <path d="M114.876 8.5C110.005 8.5 106.134 12.303 106.134 17.0223C106.134 21.7416 110.005 25.5 114.876 25.5C119.747 25.5 123.639 21.7457 123.639 17.0223C123.639 12.2989 119.747 8.5 114.876 8.5ZM117.702 21.6767L115.344 16.5804C115.273 16.4385 115.173 16.3209 114.93 16.3209H114.688C114.471 16.3209 114.345 16.4385 114.274 16.5804L112.021 21.6524C110.398 20.7037 109.307 18.9846 109.307 17.0223C109.307 14.0464 111.816 11.5692 114.88 11.5692C117.945 11.5692 120.478 14.0464 120.478 17.0223C120.478 19.0008 119.358 20.732 117.702 21.6767Z" fill="#232322"/>
+            <path d="M144.672 24.7216L141.8 8.85273C141.775 8.66217 141.628 8.5 141.361 8.5H140.972C140.755 8.5 140.629 8.59325 140.558 8.73515L135.203 19.8806H135.132L129.772 8.73515C129.701 8.59325 129.554 8.5 129.358 8.5H128.969C128.702 8.5 128.555 8.66623 128.53 8.85273L125.633 24.7175C125.583 25.0499 125.779 25.2608 126.097 25.2608H128.288C128.505 25.2608 128.702 25.0702 128.727 24.9081L130.14 15.9601H130.211L134.521 25.2405C134.596 25.3824 134.718 25.5 134.935 25.5H135.374C135.592 25.5 135.738 25.3824 135.788 25.2405L140.048 15.9601H140.119L141.557 24.9081C141.608 25.0743 141.8 25.2608 142.021 25.2608H144.237C144.555 25.2608 144.747 25.0499 144.676 24.7175L144.672 24.7216Z" fill="#232322"/>
           </g>
         </g>
       </g>
@@ -402,7 +393,10 @@
       </defs>
     </svg>
 
-    <time class="timestamp" id="utc-clock" datetime="">0000-00-00 00:00:00Z</time>
+    <div class="header-meta">
+      <time class="timestamp" id="utc-clock" datetime="">0000-00-00 00:00:00Z</time>
+      <span class="readout" id="readout">BRG 000&deg;</span>
+    </div>
   </header>
 
   <main class="center">
@@ -413,18 +407,13 @@
            One full continuous bounce per sounding phase. -->
       <div class="pulse-line out-1" aria-hidden="true"></div>
 
-      <!-- Radar trail: sweeps behind the wedge beam in the direction of rotation -->
-      <div class="radar-trail-wrap" aria-hidden="true">
-        <div class="radar-trail"></div>
-      </div>
-
       <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
         <g class="mark-rotating">
           <mask id="cm-mask" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="7" y="7" width="66" height="66">
             <path d="M72.1569 7.84302H7.84314V72.1567H72.1569V7.84302Z" fill="white"/>
           </mask>
           <g mask="url(#cm-mask)">
-            <path d="M39.9616 7.84302C22.0668 7.84302 7.84314 22.2304 7.84314 40.0843C7.84314 57.9381 22.0668 72.1567 39.9616 72.1567C57.8564 72.1567 72.1569 57.9534 72.1569 40.0843C72.1569 22.2151 57.841 7.84302 39.9616 7.84302ZM50.3298 57.6927L41.6666 38.4123C41.4055 37.8755 41.0368 37.4307 40.146 37.4307H39.2551C38.4563 37.4307 37.9955 37.8755 37.7344 38.4123L29.4551 57.6007C23.4953 54.0115 19.4863 47.508 19.4863 40.0843C19.4863 28.8259 28.7025 19.4542 39.9616 19.4542C51.2207 19.4542 60.5291 28.8259 60.5291 40.0843C60.5291 47.5694 56.4126 54.1189 50.3298 57.6927Z" fill="#181818"/>
+            <path d="M39.9616 7.84302C22.0668 7.84302 7.84314 22.2304 7.84314 40.0843C7.84314 57.9381 22.0668 72.1567 39.9616 72.1567C57.8564 72.1567 72.1569 57.9534 72.1569 40.0843C72.1569 22.2151 57.841 7.84302 39.9616 7.84302ZM50.3298 57.6927L41.6666 38.4123C41.4055 37.8755 41.0368 37.4307 40.146 37.4307H39.2551C38.4563 37.4307 37.9955 37.8755 37.7344 38.4123L29.4551 57.6007C23.4953 54.0115 19.4863 47.508 19.4863 40.0843C19.4863 28.8259 28.7025 19.4542 39.9616 19.4542C51.2207 19.4542 60.5291 28.8259 60.5291 40.0843C60.5291 47.5694 56.4126 54.1189 50.3298 57.6927Z" fill="#232322"/>
           </g>
         </g>
       </svg>
@@ -459,18 +448,134 @@
     setInterval(tick, 1000);
   })();
 
-  // ===== Phase controller: sweep <-> sound =====
+  // ===== Starfield: dense grain + parallax =====
+  (function () {
+    var sf = document.getElementById('starfield');
+    if (!sf) return;
+
+    // Generate a dense field of fine-grain dots. Density scaled to viewport.
+    function populate() {
+      // Clear any existing dots (in case of re-population on resize)
+      while (sf.firstChild) sf.removeChild(sf.firstChild);
+
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+
+      // Set viewBox to match viewport so 1 svg unit = 1 px
+      sf.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+      sf.setAttribute('width', w);
+      sf.setAttribute('height', h);
+
+      // Density: ~1 dot per 800 px². This is film-grain territory: ~2500
+      // dots on a 1920x1080 desktop, ~450 on a 400x900 phone. At this
+      // density and the small sizes below, no individual dot is countable;
+      // the field reads as surface grain.
+      var area = w * h;
+      var count = Math.round(area / 800);
+
+      var svgNS = 'http://www.w3.org/2000/svg';
+      for (var i = 0; i < count; i++) {
+        var c = document.createElementNS(svgNS, 'circle');
+        // Edge-to-edge distribution. Texture covers the full surface.
+        var x = Math.round(Math.random() * w);
+        var y = Math.round(Math.random() * h);
+        // Radii 0.15 to 0.6 px, biased toward the smallest via squared
+        // random. Deeply sub-pixel — the dots render as soft anti-aliased
+        // specks rather than crisp circles. That's the texture quality.
+        var r = (0.15 + Math.pow(Math.random(), 2) * 0.45).toFixed(2);
+        c.setAttribute('cx', x);
+        c.setAttribute('cy', y);
+        c.setAttribute('r', r);
+        c.setAttribute('class', 'star');
+        // Low opacity so no single dot is salient.
+        c.setAttribute('opacity', (0.18 + Math.random() * 0.22).toFixed(2));
+        sf.appendChild(c);
+      }
+    }
+
+    populate();
+
+    // Repopulate on resize (debounced) so density adapts to viewport changes
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(populate, 250);
+    });
+
+    // ----- Parallax -----
+    // Desktop: mouse position drives translation, max ~8px in each direction.
+    // With a dense textural field, small movements read clearly as surface
+    // motion. Mobile: tap position drives a brief translation that eases
+    // back to center.
+    var MAX_OFFSET = 8;        // px of travel in each axis
+    var currentX = 0;
+    var currentY = 0;
+    var rafPending = false;
+
+    function applyTransform(x, y) {
+      sf.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+    }
+
+    function setTarget(x, y) {
+      currentX = x;
+      currentY = y;
+      if (!rafPending) {
+        rafPending = true;
+        requestAnimationFrame(function () {
+          applyTransform(currentX, currentY);
+          rafPending = false;
+        });
+      }
+    }
+
+    // Detect touch-capable vs mouse-driven environment.
+    var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+    if (!isTouch) {
+      // Desktop: mouse-driven continuous parallax.
+      sf.classList.add('tracking');
+      window.addEventListener('mousemove', function (e) {
+        // Normalize cursor position to -1..1 around viewport center
+        var nx = (e.clientX / window.innerWidth) * 2 - 1;
+        var ny = (e.clientY / window.innerHeight) * 2 - 1;
+        // Inverted: field moves OPPOSITE to cursor for parallax depth.
+        setTarget(-nx * MAX_OFFSET, -ny * MAX_OFFSET);
+      });
+      // Reset when mouse leaves the page
+      window.addEventListener('mouseleave', function () {
+        sf.classList.remove('tracking');
+        setTarget(0, 0);
+        setTimeout(function () { sf.classList.add('tracking'); }, 700);
+      });
+    } else {
+      // Mobile: tap triggers a brief offset, then eases back to center.
+      // The transition rule on .starfield (not .tracking) handles the
+      // 600ms ease-back automatically when we set target to 0.
+      window.addEventListener('touchstart', function (e) {
+        if (!e.touches || !e.touches[0]) return;
+        var t = e.touches[0];
+        var nx = (t.clientX / window.innerWidth) * 2 - 1;
+        var ny = (t.clientY / window.innerHeight) * 2 - 1;
+        setTarget(-nx * MAX_OFFSET, -ny * MAX_OFFSET);
+        // Ease back to center after a short hold
+        setTimeout(function () {
+          setTarget(0, 0);
+        }, 400);
+      }, { passive: true });
+    }
+  })();
+
+  // ===== Phase controller =====
   // The page alternates between two modes:
-  //   SWEEP   — mark rotates, marine depth rings emanate (~30s)
-  //   SILENCE — brief pause as sweep ends and motion settles (~2s)
-  //   SOUND   — wedge points down, three pulses descend with faint returns (~13s)
-  //   SILENCE — brief pause before next sweep cycle (~2s)
-  // Total cycle ~47s. Patient. The page rewards sustained attention.
+  //   SWEEP   — mark rotates, bearing readout updates live
+  //   SOUND   — mark holds at rest, depth readout displayed throughout
+  // Brief silences bracket each phase transition.
 
   var stage = document.getElementById('mark-stage');
   var rotator = stage ? stage.querySelector('.mark-rotating') : null;
-  var trail = stage ? stage.querySelector('.radar-trail') : null;
+  var readout = document.getElementById('readout');
   var freezeAnims = [];
+  var bearingRaf = null;
 
   // Phase timings (ms)
   // First sweep is one full rotation; subsequent sweeps are three full
@@ -483,12 +588,53 @@
   var SILENCE_TO_SWEEP = 2200;
   var FREEZE_DURATION  = 1800;
 
+  // Depth value shown during the sound phase. A plausible-sounding number.
+  var DEPTH_READOUT    = 'DPT 142M';
+
   var cycleIndex = 0;  // tracks which cycle we're on
 
   function setPhase(name) {
     if (!stage) return;
     stage.classList.remove('phase-sweep', 'phase-sound', 'phase-silent');
     stage.classList.add('phase-' + name);
+  }
+
+  function showReadout(visible) {
+    if (!readout) return;
+    if (visible) readout.classList.add('live');
+    else readout.classList.remove('live');
+  }
+
+  function setReadoutText(text) {
+    if (!readout) return;
+    readout.textContent = text;
+  }
+
+  function pad3(n) {
+    n = Math.floor(n);
+    if (n < 10) return '00' + n;
+    if (n < 100) return '0' + n;
+    return '' + n;
+  }
+
+  function startBearingLoop() {
+    stopBearingLoop();
+    function tick() {
+      // Bearing = current CSS rotation, normalized 0-359 deg.
+      // CSS rotation 0 = wedge points up = bearing 000 (north).
+      // CSS rotation 90 = wedge points right = bearing 090 (east).
+      var bearing = readRotation(rotator) % 360;
+      setReadoutText('BRG ' + pad3(bearing) + '\u00B0');
+      bearingRaf = requestAnimationFrame(tick);
+    }
+    tick();
+  }
+
+  function stopBearingLoop() {
+    if (bearingRaf) {
+      cancelAnimationFrame(bearingRaf);
+      bearingRaf = null;
+    }
   }
 
   function readRotation(el) {
@@ -505,45 +651,45 @@
 
   function freezeRotatorAtZero() {
     if (!rotator) return;
-    // Capture live rotation of both the mark and the trail BEFORE removing
-    // the CSS animation, so we can ease both to rest from their current state.
-    var markAngle  = readRotation(rotator);
-    var trailAngle = readRotation(trail);
+    // Read the live rotation before removing the CSS animation.
+    var markAngle = readRotation(rotator);
 
-    // Remove the CSS-driven sweep so the WAAPI freezes can take over.
+    // Remove the CSS-driven sweep so the WAAPI freeze can take over.
     stage.classList.remove('phase-sweep');
 
-    // Always land at 360deg (wedge pointing down, the rest orientation).
-    // Sweep is clockwise, so we travel forward from currentAngle to 360 or 720.
-    var markEnd  = markAngle  >= 360 ? 720 : 360;
-    var trailEnd = trailAngle >= 360 ? 720 : 360;
+    // Sweep is a clean multiple of the rotation period, so in normal
+    // operation markAngle is within a few degrees of 0 or 360 at this
+    // moment. We handle that common case by snapping cleanly to rest
+    // without animation. Only when we somehow have significant travel do
+    // we run a scaled freeze animation.
+    var SNAP_THRESHOLD = 12; // degrees
+    var fromZero  = Math.min(markAngle, 360 - markAngle); // distance to 0/360
+    var nearRest  = fromZero <= SNAP_THRESHOLD;
 
     freezeAnims = [];
 
-    // Freeze the mark
-    freezeAnims.push(rotator.animate(
-      [
-        { transform: 'rotate(' + markAngle  + 'deg)' },
-        { transform: 'rotate(' + markEnd    + 'deg)' }
-      ],
-      {
-        duration: FREEZE_DURATION,
-        easing: 'cubic-bezier(0.33, 0, 0.18, 1)',
-        fill: 'forwards'
-      }
-    ));
-
-    // Freeze the trail synchronously, AND fade its opacity to 0 over the freeze.
-    // The trail dissolves as the beam comes to rest, which reads as the radar
-    // "going quiet" before the sounding mode begins.
-    if (trail) {
-      freezeAnims.push(trail.animate(
+    if (nearRest) {
+      // Snap directly to rest. No animation, no chance of an accelerated spin.
+      freezeAnims.push(rotator.animate(
         [
-          { transform: 'rotate(' + trailAngle + 'deg)', opacity: 1 },
-          { transform: 'rotate(' + trailEnd   + 'deg)', opacity: 0 }
+          { transform: 'rotate(0deg)' },
+          { transform: 'rotate(0deg)' }
+        ],
+        { duration: 1, fill: 'forwards' }
+      ));
+    } else {
+      // Defensive path: meaningful distance to cover. Always go clockwise
+      // (forward) and scale the duration to travel.
+      var markEnd = 360;
+      var travel = markEnd - markAngle;
+      var duration = Math.min(FREEZE_DURATION, Math.max(200, travel * 6));
+      freezeAnims.push(rotator.animate(
+        [
+          { transform: 'rotate(' + markAngle + 'deg)' },
+          { transform: 'rotate(' + markEnd   + 'deg)' }
         ],
         {
-          duration: FREEZE_DURATION,
+          duration: duration,
           easing: 'cubic-bezier(0.33, 0, 0.18, 1)',
           fill: 'forwards'
         }
@@ -566,17 +712,28 @@
     var sweepDuration = (cycleIndex === 0) ? SWEEP_FIRST : SWEEP_SUBSEQUENT;
     cycleIndex++;
 
+    // SWEEP — show live bearing readout
     resumeSweep();
+    showReadout(true);
+    startBearingLoop();
 
     setTimeout(function () {
-      // Transition: ease sweep to a stop at wedge-down rest
+      // Transition: ease sweep to a stop at wedge rest
+      stopBearingLoop();
       freezeRotatorAtZero();
+      // Brief silence during the freeze transition
+      showReadout(false);
+
       setTimeout(function () {
-        // SOUND
+        // SOUND — lock the readout to depth
         setPhase('sound');
+        setReadoutText(DEPTH_READOUT);
+        showReadout(true);
+
         setTimeout(function () {
           // Silence before next sweep cycle
           setPhase('silent');
+          showReadout(false);
           setTimeout(function () {
             runCycle();
           }, SILENCE_TO_SWEEP);
