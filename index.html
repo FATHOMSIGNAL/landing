@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM</title>
+<meta name="description" content="A precision instrument.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Brand tokens from DOC-DS-001 v1.1 */
+    --ink-900: #181818;
+    --ink-800: #232322;
+    --ink-700: #2E2E2D;
+    --ink-600: #4A4A47;
+    --ink-500: #6F6E6B;
+    --ink-400: #8E8C88;
+    --ink-300: #B5B2AC;
+    --ink-200: #D4D0C9;
+    --ink-100: #E8E5DF;
+    --paper-100: #FFFFFE;
+    --paper-200: #FAF8F4;
+    --paper-300: #F4F2EE;
+    --paper-400: #ECE8E1;
+    --marine-500: #2C5F7C;
+    --marine-400: #3D7593;
+
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+    --space-9: 96px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--paper-300);
+    color: var(--ink-900);
+    font-family: var(--font-mono);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+
+  body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    padding: var(--space-7);
+  }
+
+  @keyframes draw-in {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes mark-fade-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* SWEEP: continuous rotation */
+  @keyframes sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Transition out of sweep: ease to a stop at 0 deg (wedge pointing down) */
+  @keyframes sweep-ease-out {
+    from { transform: rotate(var(--sweep-angle, 0deg)); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* RADAR PPI: trailing wedge of fading marine sweeps behind the beam.
+     Implemented as a circular div with a conic-gradient. Rotates with the mark.
+     The brightest edge of the gradient sits where the wedge points (down, 180deg
+     in conic-gradient coordinates where 0deg is at the top). The trail fades
+     counterclockwise behind the beam since the sweep is clockwise. */
+
+  /* SOUNDING: outgoing pulse line descends from disc edge */
+  @keyframes pulse-out {
+    0%   { transform: translateY(0);    opacity: 0; }
+    10%  { opacity: 0.55; }
+    80%  { opacity: 0.4; }
+    100% { transform: translateY(140px); opacity: 0; }
+  }
+
+  /* SOUNDING: return pulse line ascends back to disc, faint */
+  @keyframes pulse-return {
+    0%   { transform: translateY(140px); opacity: 0; }
+    20%  { opacity: 0.18; }
+    100% { transform: translateY(0);    opacity: 0; }
+  }
+
+  /* ===================== NOISE OVERLAY ===================== */
+
+  .noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.028;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 200px 200px;
+  }
+
+  /* ===================== HEADER ===================== */
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    animation: fade-in 800ms ease-out 200ms forwards;
+  }
+
+  .wordmark {
+    height: 22px;
+    width: auto;
+    display: block;
+  }
+
+  .timestamp {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--ink-500);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===================== CENTER ===================== */
+
+  .center {
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+
+  .mark-stage {
+    width: min(38vmin, 340px);
+    height: min(38vmin, 340px);
+    position: relative;
+    opacity: 0;
+    animation: mark-fade-in 1400ms cubic-bezier(0.16, 1, 0.3, 1) 600ms forwards;
+  }
+
+  .mark-stage > svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* The whole mark rotates slowly so the wedge sweeps around */
+  .mark-rotating {
+    transform-origin: 50% 50%;
+    transform: rotate(0deg);
+  }
+
+  /* Phase: SWEEP — continuous rotation */
+  .mark-stage.phase-sweep .mark-rotating {
+    animation: sweep 18s linear infinite;
+  }
+
+  /* Radar trail: circular conic-gradient sweep that rotates with the mark.
+     The trail fills 80% of the mark-stage, centered. We center via an absolutely
+     positioned wrapper so the rotation animation can use a clean transform that
+     doesn't fight the translate. */
+  .radar-trail-wrap {
+    position: absolute;
+    inset: 10%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .radar-trail {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    /* The conic gradient: bright marine at the beam direction (180deg, since
+       the wedge in the brand mark points down at rotation 0), fading
+       counterclockwise across roughly 70deg of arc (the trail). */
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      transparent 110deg,
+      rgba(44, 95, 124, 0.02) 130deg,
+      rgba(44, 95, 124, 0.10) 155deg,
+      rgba(44, 95, 124, 0.22) 175deg,
+      rgba(44, 95, 124, 0.30) 180deg,
+      transparent 182deg,
+      transparent 360deg
+    );
+    /* Mask to a circle so the gradient stays inside the disc shape */
+    -webkit-mask: radial-gradient(circle, black 0 49%, transparent 50%);
+            mask: radial-gradient(circle, black 0 49%, transparent 50%);
+  }
+
+  /* The trail rotates synchronously with the mark during sweep phase.
+     Same duration as the mark sweep so they stay locked together. */
+  .mark-stage.phase-sweep .radar-trail {
+    opacity: 1;
+    animation: sweep 18s linear infinite;
+  }
+
+  /* ===================== SOUNDING PULSES ===================== */
+
+  /* Pulse lines descend from the disc's bottom edge into the negative
+     space below the mark. The disc spans y=7.8 to y=72.2 in the 80-unit
+     SVG viewBox, so the disc's bottom edge is at ~90% of the mark-stage
+     height (since the SVG fills the stage). */
+  .pulse-line {
+    position: absolute;
+    left: 50%;
+    top: 88%;
+    width: 60px;
+    height: 1px;
+    margin-left: -30px;
+    background: var(--marine-500);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .pulse-line.line-2 { width: 50px; margin-left: -25px; }
+  .pulse-line.line-3 { width: 40px; margin-left: -20px; }
+
+  /* Outgoing pulses only animate during sounding phase */
+  .mark-stage.phase-sound .pulse-line.out-1 {
+    animation: pulse-out 3.2s ease-in 0s 3;
+  }
+  .mark-stage.phase-sound .pulse-line.out-2 {
+    animation: pulse-out 3.2s ease-in 0.25s 3;
+  }
+  .mark-stage.phase-sound .pulse-line.out-3 {
+    animation: pulse-out 3.2s ease-in 0.5s 3;
+  }
+
+  /* Return pulses are fainter, ascend back; staggered to follow outgoing */
+  .mark-stage.phase-sound .pulse-line.ret-1 {
+    animation: pulse-return 2.4s ease-out 1.8s 3;
+  }
+  .mark-stage.phase-sound .pulse-line.ret-2 {
+    animation: pulse-return 2.4s ease-out 2.05s 3;
+  }
+  .mark-stage.phase-sound .pulse-line.ret-3 {
+    animation: pulse-return 2.4s ease-out 2.3s 3;
+  }
+
+  /* ===================== FOOTER ===================== */
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    animation: fade-in 800ms ease-out 1200ms forwards;
+  }
+
+  .footer-text {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  .footer-text a {
+    color: var(--ink-500);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+
+  .footer-text a:hover {
+    color: var(--ink-900);
+  }
+
+  /* ===================== HAIRLINES ===================== */
+
+  .hairline {
+    position: absolute;
+    background: var(--ink-200);
+    transform-origin: left center;
+    animation: draw-in 900ms cubic-bezier(0.65, 0, 0.35, 1) 400ms forwards;
+    transform: scaleX(0);
+  }
+
+  .hairline-top {
+    top: calc(var(--space-7) + 40px);
+    left: var(--space-7);
+    right: var(--space-7);
+    height: 1px;
+  }
+
+  .hairline-bottom {
+    bottom: calc(var(--space-7) + 44px);
+    left: var(--space-7);
+    right: var(--space-7);
+    height: 1px;
+    animation-delay: 700ms;
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+
+  @media (max-width: 640px) {
+    body { padding: var(--space-5); }
+    .hairline-top {
+      top: calc(var(--space-5) + 36px);
+      left: var(--space-5);
+      right: var(--space-5);
+    }
+    .hairline-bottom {
+      bottom: calc(var(--space-5) + 40px);
+      left: var(--space-5);
+      right: var(--space-5);
+    }
+    .footer-text { font-size: 9px; }
+    .timestamp { font-size: 10px; }
+    .wordmark { height: 18px; }
+    .pulse-line { width: 48px; margin-left: -24px; }
+    .pulse-line.line-2 { width: 40px; margin-left: -20px; }
+    .pulse-line.line-3 { width: 32px; margin-left: -16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mark-stage.phase-sweep .mark-rotating,
+    .mark-stage.phase-sweep .radar-trail,
+    .mark-stage.phase-sound .pulse-line {
+      animation: none !important;
+    }
+    .radar-trail { opacity: 0 !important; }
+    .hairline {
+      animation: none;
+      transform: scaleX(1);
+    }
+    .header, .footer, .mark-stage {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="noise" aria-hidden="true"></div>
+
+  <div class="hairline hairline-top"></div>
+  <div class="hairline hairline-bottom"></div>
+
+  <header class="header">
+    <svg class="wordmark" viewBox="0 0 145 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="FATHOM">
+      <g clip-path="url(#wm-clip0)">
+        <mask id="wm-mask0" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="3" y="3" width="28" height="28">
+          <path d="M30.6667 3.33325H3.33333V30.6666H30.6667V3.33325Z" fill="white"/>
+        </mask>
+        <g mask="url(#wm-mask0)">
+          <path d="M16.9837 3.33325C9.3784 3.33325 3.33333 9.44789 3.33333 17.0358C3.33333 24.6237 9.3784 30.6666 16.9837 30.6666C24.589 30.6666 30.6667 24.6302 30.6667 17.0358C30.6667 9.44139 24.5824 3.33325 16.9837 3.33325ZM21.3902 24.5194L17.7083 16.3252C17.5973 16.0971 17.4406 15.908 17.062 15.908H16.6834C16.3439 15.908 16.1481 16.0971 16.0371 16.3252L12.5184 24.4803C9.9855 22.9549 8.28166 20.1909 8.28166 17.0358C8.28166 12.251 12.1986 8.26799 16.9837 8.26799C21.7688 8.26799 25.7249 12.251 25.7249 17.0358C25.7249 20.217 23.9753 23.0005 21.3902 24.5194Z" fill="#181818"/>
+        </g>
+      </g>
+      <g clip-path="url(#wm-clip1)">
+        <g clip-path="url(#wm-clip2)">
+          <mask id="wm-mask1" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="48" y="8" width="97" height="18">
+            <path d="M144.689 8.5H48.0013V25.5H144.689V8.5Z" fill="white"/>
+          </mask>
+          <g mask="url(#wm-mask1)">
+            <path d="M58.3736 8.73511H48.4653C48.1977 8.73511 48.0013 8.94999 48.0013 9.18514V24.8147C48.0013 25.0499 48.1977 25.2648 48.4653 25.2648H50.7062C50.9487 25.2648 51.1702 25.054 51.1702 24.8147V18.8427H57.1821C57.4246 18.8427 57.6462 18.6318 57.6462 18.3926V16.4587C57.6462 16.2235 57.4288 16.0087 57.1821 16.0087H51.1661V11.5691H58.3736C58.6412 11.5691 58.8377 11.3583 58.8377 11.1191V9.18514C58.8377 8.94999 58.6412 8.73511 58.3736 8.73511Z" fill="#181818"/>
+            <path d="M67.5503 8.75948C67.4751 8.61758 67.3789 8.5 67.1363 8.5H66.8939C66.6765 8.5 66.5511 8.61758 66.48 8.75948L58.9088 24.6486C58.7625 24.9567 58.9589 25.2608 59.3226 25.2608H61.4423C61.8311 25.2608 62.0526 25.0256 62.1488 24.7905L63.3403 22.2403H70.6189L71.8104 24.7905C71.9819 25.1229 72.1533 25.2608 72.5169 25.2608H74.6366C75.0003 25.2608 75.1968 24.9527 75.0505 24.6486L67.5503 8.75948ZM64.5318 19.6212L66.919 14.4275H66.9943L69.4274 19.6212H64.536H64.5318Z" fill="#181818"/>
+            <path d="M85.565 8.73511H74.9251C74.6576 8.73511 74.461 8.94594 74.461 9.18514V11.1191C74.461 11.3542 74.6576 11.5691 74.9251 11.5691H78.6501V24.8147C78.6501 25.0499 78.8675 25.2648 79.1141 25.2648H81.3801C81.6226 25.2648 81.8442 25.054 81.8442 24.8147V11.5691H85.5692C85.8368 11.5691 86.0332 11.3583 86.0332 11.1191V9.18514C86.0332 8.94999 85.8368 8.73511 85.5692 8.73511H85.565Z" fill="#181818"/>
+            <path d="M102.388 8.73511H100.147C99.8798 8.73511 99.6833 8.94594 99.6833 9.18514V15.441H91.7483V9.18514C91.7483 8.94999 91.5519 8.73511 91.2842 8.73511H89.0183C88.7759 8.73511 88.5542 8.94594 88.5542 9.18514V24.8147C88.5542 25.0499 88.7716 25.2648 89.0183 25.2648H91.2842C91.5519 25.2648 91.7483 25.054 91.7483 24.8147V18.2994H99.6833V24.8147C99.6833 25.0499 99.8798 25.2648 100.147 25.2648H102.388C102.631 25.2648 102.852 25.054 102.852 24.8147V9.18514C102.852 8.94999 102.635 8.73511 102.388 8.73511Z" fill="#181818"/>
+            <path d="M114.876 8.5C110.005 8.5 106.134 12.303 106.134 17.0223C106.134 21.7416 110.005 25.5 114.876 25.5C119.747 25.5 123.639 21.7457 123.639 17.0223C123.639 12.2989 119.747 8.5 114.876 8.5ZM117.702 21.6767L115.344 16.5804C115.273 16.4385 115.173 16.3209 114.93 16.3209H114.688C114.471 16.3209 114.345 16.4385 114.274 16.5804L112.021 21.6524C110.398 20.7037 109.307 18.9846 109.307 17.0223C109.307 14.0464 111.816 11.5692 114.88 11.5692C117.945 11.5692 120.478 14.0464 120.478 17.0223C120.478 19.0008 119.358 20.732 117.702 21.6767Z" fill="#181818"/>
+            <path d="M144.672 24.7216L141.8 8.85273C141.775 8.66217 141.628 8.5 141.361 8.5H140.972C140.755 8.5 140.629 8.59325 140.558 8.73515L135.203 19.8806H135.132L129.772 8.73515C129.701 8.59325 129.554 8.5 129.358 8.5H128.969C128.702 8.5 128.555 8.66623 128.53 8.85273L125.633 24.7175C125.583 25.0499 125.779 25.2608 126.097 25.2608H128.288C128.505 25.2608 128.702 25.0702 128.727 24.9081L130.14 15.9601H130.211L134.521 25.2405C134.596 25.3824 134.718 25.5 134.935 25.5H135.374C135.592 25.5 135.738 25.3824 135.788 25.2405L140.048 15.9601H140.119L141.557 24.9081C141.608 25.0743 141.8 25.2608 142.021 25.2608H144.237C144.555 25.2608 144.747 25.0499 144.676 24.7175L144.672 24.7216Z" fill="#181818"/>
+          </g>
+        </g>
+      </g>
+      <defs>
+        <clipPath id="wm-clip0"><rect width="34" height="34" fill="white"/></clipPath>
+        <clipPath id="wm-clip1"><rect width="96.69" height="17" fill="white" transform="translate(48 8.5)"/></clipPath>
+        <clipPath id="wm-clip2"><rect width="96.6875" height="17" fill="white" transform="translate(48.0013 8.5)"/></clipPath>
+      </defs>
+    </svg>
+
+    <time class="timestamp" id="utc-clock" datetime="">0000-00-00 00:00:00Z</time>
+  </header>
+
+  <main class="center">
+    <div class="mark-stage" id="mark-stage" aria-label="FATHOM mark">
+
+      <!-- Sounding pulse lines: descend from disc edge during sound phase -->
+      <div class="pulse-line line-1 out-1" aria-hidden="true"></div>
+      <div class="pulse-line line-2 out-2" aria-hidden="true"></div>
+      <div class="pulse-line line-3 out-3" aria-hidden="true"></div>
+      <div class="pulse-line line-1 ret-1" aria-hidden="true"></div>
+      <div class="pulse-line line-2 ret-2" aria-hidden="true"></div>
+      <div class="pulse-line line-3 ret-3" aria-hidden="true"></div>
+
+      <!-- Radar trail: sweeps behind the wedge beam in the direction of rotation -->
+      <div class="radar-trail-wrap" aria-hidden="true">
+        <div class="radar-trail"></div>
+      </div>
+
+      <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+        <g class="mark-rotating">
+          <mask id="cm-mask" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="7" y="7" width="66" height="66">
+            <path d="M72.1569 7.84302H7.84314V72.1567H72.1569V7.84302Z" fill="white"/>
+          </mask>
+          <g mask="url(#cm-mask)">
+            <path d="M39.9616 7.84302C22.0668 7.84302 7.84314 22.2304 7.84314 40.0843C7.84314 57.9381 22.0668 72.1567 39.9616 72.1567C57.8564 72.1567 72.1569 57.9534 72.1569 40.0843C72.1569 22.2151 57.841 7.84302 39.9616 7.84302ZM50.3298 57.6927L41.6666 38.4123C41.4055 37.8755 41.0368 37.4307 40.146 37.4307H39.2551C38.4563 37.4307 37.9955 37.8755 37.7344 38.4123L29.4551 57.6007C23.4953 54.0115 19.4863 47.508 19.4863 40.0843C19.4863 28.8259 28.7025 19.4542 39.9616 19.4542C51.2207 19.4542 60.5291 28.8259 60.5291 40.0843C60.5291 47.5694 56.4126 54.1189 50.3298 57.6927Z" fill="#181818"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-text">&copy; OA FEEDFORWARD</span>
+    <span class="footer-text"><a href="mailto:team@fathomsignal.com">TEAM@FATHOMSIGNAL.COM</a></span>
+  </footer>
+
+<script>
+  // ===== Live UTC timestamp =====
+  (function () {
+    var el = document.getElementById('utc-clock');
+    if (!el) return;
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    function tick() {
+      var d = new Date();
+      var s =
+        d.getUTCFullYear() + '-' +
+        pad(d.getUTCMonth() + 1) + '-' +
+        pad(d.getUTCDate()) + ' ' +
+        pad(d.getUTCHours()) + ':' +
+        pad(d.getUTCMinutes()) + ':' +
+        pad(d.getUTCSeconds()) + 'Z';
+      el.textContent = s;
+      el.setAttribute('datetime', d.toISOString());
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+
+  // ===== Phase controller: sweep <-> sound =====
+  // The page alternates between two modes:
+  //   SWEEP   — mark rotates, marine depth rings emanate (~30s)
+  //   SILENCE — brief pause as sweep ends and motion settles (~2s)
+  //   SOUND   — wedge points down, three pulses descend with faint returns (~13s)
+  //   SILENCE — brief pause before next sweep cycle (~2s)
+  // Total cycle ~47s. Patient. The page rewards sustained attention.
+
+  var stage = document.getElementById('mark-stage');
+  var rotator = stage ? stage.querySelector('.mark-rotating') : null;
+  var trail = stage ? stage.querySelector('.radar-trail') : null;
+  var freezeAnims = [];
+
+  // Phase timings (ms)
+  var SWEEP_DURATION   = 30000;
+  var SILENCE_TO_SOUND = 2200;
+  var SOUND_DURATION   = 13000;
+  var SILENCE_TO_SWEEP = 2200;
+  var FREEZE_DURATION  = 1800;
+
+  function setPhase(name) {
+    if (!stage) return;
+    stage.classList.remove('phase-sweep', 'phase-sound', 'phase-silent');
+    stage.classList.add('phase-' + name);
+  }
+
+  function readRotation(el) {
+    if (!el) return 0;
+    try {
+      var matrix = new DOMMatrixReadOnly(getComputedStyle(el).transform);
+      var angle = Math.atan2(matrix.b, matrix.a) * (180 / Math.PI);
+      if (angle < 0) angle += 360;
+      return angle;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function freezeRotatorAtZero() {
+    if (!rotator) return;
+    // Capture live rotation of both the mark and the trail BEFORE removing
+    // the CSS animation, so we can ease both to rest from their current state.
+    var markAngle  = readRotation(rotator);
+    var trailAngle = readRotation(trail);
+
+    // Remove the CSS-driven sweep so the WAAPI freezes can take over.
+    stage.classList.remove('phase-sweep');
+
+    // Always land at 360deg (wedge pointing down, the rest orientation).
+    // Sweep is clockwise, so we travel forward from currentAngle to 360 or 720.
+    var markEnd  = markAngle  >= 360 ? 720 : 360;
+    var trailEnd = trailAngle >= 360 ? 720 : 360;
+
+    freezeAnims = [];
+
+    // Freeze the mark
+    freezeAnims.push(rotator.animate(
+      [
+        { transform: 'rotate(' + markAngle  + 'deg)' },
+        { transform: 'rotate(' + markEnd    + 'deg)' }
+      ],
+      {
+        duration: FREEZE_DURATION,
+        easing: 'cubic-bezier(0.33, 0, 0.18, 1)',
+        fill: 'forwards'
+      }
+    ));
+
+    // Freeze the trail synchronously, AND fade its opacity to 0 over the freeze.
+    // The trail dissolves as the beam comes to rest, which reads as the radar
+    // "going quiet" before the sounding mode begins.
+    if (trail) {
+      freezeAnims.push(trail.animate(
+        [
+          { transform: 'rotate(' + trailAngle + 'deg)', opacity: 1 },
+          { transform: 'rotate(' + trailEnd   + 'deg)', opacity: 0 }
+        ],
+        {
+          duration: FREEZE_DURATION,
+          easing: 'cubic-bezier(0.33, 0, 0.18, 1)',
+          fill: 'forwards'
+        }
+      ));
+    }
+  }
+
+  function resumeSweep() {
+    // Cancel any lingering WAAPI freeze animations so the CSS sweep can take
+    // over cleanly without transform conflicts.
+    freezeAnims.forEach(function (a) {
+      try { a.cancel(); } catch (e) {}
+    });
+    freezeAnims = [];
+    setPhase('sweep');
+  }
+
+  function runCycle() {
+    // SWEEP
+    resumeSweep();
+
+    setTimeout(function () {
+      // Transition: ease sweep to a stop at wedge-down rest
+      freezeRotatorAtZero();
+      setTimeout(function () {
+        // SOUND
+        setPhase('sound');
+        setTimeout(function () {
+          // Silence before next sweep cycle
+          setPhase('silent');
+          setTimeout(function () {
+            runCycle();
+          }, SILENCE_TO_SWEEP);
+        }, SOUND_DURATION);
+      }, SILENCE_TO_SOUND);
+    }, SWEEP_DURATION);
+  }
+
+  // Kick off the page after initial fade-in, matching the prior 2s delay
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      runCycle();
+    }, 2000);
+  });
+</script>
+
+</body>
+</html>
