@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHOM &middot; Portal</title>
+<meta name="description" content="Portal access.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath fill='%23181818' d='M39.96 7.84C22.07 7.84 7.84 22.23 7.84 40.08c0 17.86 14.23 32.07 32.12 32.07s32.2-14.2 32.2-32.07c0-17.87-14.31-32.24-32.2-32.24zm10.37 49.85L41.67 38.41c-0.26-0.54-0.63-0.98-1.52-0.98h-0.89c-0.8 0-1.26 0.44-1.52 0.98L29.46 57.6c-5.96-3.59-9.97-10.09-9.97-17.52 0-11.26 9.22-20.63 20.48-20.63s20.57 9.37 20.57 20.63c0 7.48-4.12 14.03-10.2 17.61z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink-900: #181818;
+    --ink-800: #232322;
+    --ink-700: #2E2E2D;
+    --ink-600: #4A4A47;
+    --ink-500: #6F6E6B;
+    --ink-400: #8E8C88;
+    --ink-300: #B5B2AC;
+    --ink-200: #D4D0C9;
+    --ink-100: #E8E5DF;
+    --paper-100: #FFFFFE;
+    --paper-200: #FAF8F4;
+    --paper-300: #F4F2EE;
+    --paper-400: #ECE8E1;
+    --marine-500: #2C5F7C;
+    --marine-400: #3D7593;
+
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--paper-300);
+    color: var(--ink-900);
+    font-family: var(--font-mono);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+
+  body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    padding: var(--space-7);
+  }
+
+  @keyframes draw-in {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===================== NOISE OVERLAY ===================== */
+  .noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.028;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 200px 200px;
+  }
+
+  /* ===================== HEADER ===================== */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    animation: fade-in 800ms ease-out 200ms forwards;
+  }
+
+  .wordmark {
+    height: 22px;
+    width: auto;
+    display: block;
+  }
+
+  .wordmark a {
+    display: block;
+    line-height: 0;
+  }
+
+  .timestamp {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--ink-500);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===================== CENTER ===================== */
+  .center {
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+
+  .panel {
+    width: min(360px, 88vw);
+    opacity: 0;
+    animation: fade-in 1000ms cubic-bezier(0.16, 1, 0.3, 1) 600ms forwards;
+  }
+
+  .panel-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+    margin-bottom: var(--space-5);
+  }
+
+  .panel-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-700);
+    margin-bottom: var(--space-3);
+    display: block;
+  }
+
+  .panel-input {
+    width: 100%;
+    height: 44px;
+    background: var(--paper-200);
+    border: 1px solid var(--ink-200);
+    border-radius: 4px;
+    padding: 0 var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink-900);
+    outline: none;
+    transition: border-color 180ms ease;
+  }
+
+  .panel-input::placeholder {
+    color: var(--ink-400);
+  }
+
+  .panel-input:focus {
+    border-color: var(--marine-500);
+  }
+
+  .panel-button {
+    margin-top: var(--space-4);
+    width: 100%;
+    height: 44px;
+    background: var(--ink-900);
+    color: var(--paper-200);
+    border: none;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 180ms ease;
+  }
+
+  .panel-button:hover {
+    background: var(--marine-500);
+  }
+
+  .panel-button:active {
+    background: var(--marine-400);
+  }
+
+  .panel-meta {
+    margin-top: var(--space-5);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--ink-400);
+    line-height: 1.6;
+  }
+
+  /* Receipt: shown after form submission */
+  .receipt {
+    display: none;
+  }
+
+  .panel.submitted .form { display: none; }
+  .panel.submitted .receipt { display: block; }
+
+  .receipt-line {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-700);
+    margin-bottom: var(--space-3);
+  }
+
+  .receipt-id {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-500);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===================== FOOTER ===================== */
+  .footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    animation: fade-in 800ms ease-out 1200ms forwards;
+  }
+
+  .footer-text {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  .footer-text a {
+    color: var(--ink-500);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+
+  .footer-text a:hover {
+    color: var(--ink-900);
+  }
+
+  /* ===================== HAIRLINES ===================== */
+  .hairline {
+    position: absolute;
+    background: var(--ink-200);
+    transform-origin: left center;
+    animation: draw-in 900ms cubic-bezier(0.65, 0, 0.35, 1) 400ms forwards;
+    transform: scaleX(0);
+  }
+
+  .hairline-top {
+    top: calc(var(--space-7) + 40px);
+    left: var(--space-7);
+    right: var(--space-7);
+    height: 1px;
+  }
+
+  .hairline-bottom {
+    bottom: calc(var(--space-7) + 44px);
+    left: var(--space-7);
+    right: var(--space-7);
+    height: 1px;
+    animation-delay: 700ms;
+  }
+
+  @media (max-width: 640px) {
+    body { padding: var(--space-5); }
+    .hairline-top {
+      top: calc(var(--space-5) + 36px);
+      left: var(--space-5);
+      right: var(--space-5);
+    }
+    .hairline-bottom {
+      bottom: calc(var(--space-5) + 40px);
+      left: var(--space-5);
+      right: var(--space-5);
+    }
+    .footer-text { font-size: 9px; }
+    .timestamp { font-size: 10px; }
+    .wordmark { height: 18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header, .footer, .panel, .hairline {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="noise" aria-hidden="true"></div>
+
+  <div class="hairline hairline-top"></div>
+  <div class="hairline hairline-bottom"></div>
+
+  <header class="header">
+    <a href="/" class="wordmark" aria-label="FATHOM home">
+      <svg viewBox="0 0 145 34" fill="none" xmlns="http://www.w3.org/2000/svg" style="height: 22px; width: auto; display: block;">
+        <g clip-path="url(#wm-clip0)">
+          <mask id="wm-mask0" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="3" y="3" width="28" height="28">
+            <path d="M30.6667 3.33325H3.33333V30.6666H30.6667V3.33325Z" fill="white"/>
+          </mask>
+          <g mask="url(#wm-mask0)">
+            <path d="M16.9837 3.33325C9.3784 3.33325 3.33333 9.44789 3.33333 17.0358C3.33333 24.6237 9.3784 30.6666 16.9837 30.6666C24.589 30.6666 30.6667 24.6302 30.6667 17.0358C30.6667 9.44139 24.5824 3.33325 16.9837 3.33325ZM21.3902 24.5194L17.7083 16.3252C17.5973 16.0971 17.4406 15.908 17.062 15.908H16.6834C16.3439 15.908 16.1481 16.0971 16.0371 16.3252L12.5184 24.4803C9.9855 22.9549 8.28166 20.1909 8.28166 17.0358C8.28166 12.251 12.1986 8.26799 16.9837 8.26799C21.7688 8.26799 25.7249 12.251 25.7249 17.0358C25.7249 20.217 23.9753 23.0005 21.3902 24.5194Z" fill="#181818"/>
+          </g>
+        </g>
+        <g clip-path="url(#wm-clip1)">
+          <g clip-path="url(#wm-clip2)">
+            <mask id="wm-mask1" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="48" y="8" width="97" height="18">
+              <path d="M144.689 8.5H48.0013V25.5H144.689V8.5Z" fill="white"/>
+            </mask>
+            <g mask="url(#wm-mask1)">
+              <path d="M58.3736 8.73511H48.4653C48.1977 8.73511 48.0013 8.94999 48.0013 9.18514V24.8147C48.0013 25.0499 48.1977 25.2648 48.4653 25.2648H50.7062C50.9487 25.2648 51.1702 25.054 51.1702 24.8147V18.8427H57.1821C57.4246 18.8427 57.6462 18.6318 57.6462 18.3926V16.4587C57.6462 16.2235 57.4288 16.0087 57.1821 16.0087H51.1661V11.5691H58.3736C58.6412 11.5691 58.8377 11.3583 58.8377 11.1191V9.18514C58.8377 8.94999 58.6412 8.73511 58.3736 8.73511Z" fill="#181818"/>
+              <path d="M67.5503 8.75948C67.4751 8.61758 67.3789 8.5 67.1363 8.5H66.8939C66.6765 8.5 66.5511 8.61758 66.48 8.75948L58.9088 24.6486C58.7625 24.9567 58.9589 25.2608 59.3226 25.2608H61.4423C61.8311 25.2608 62.0526 25.0256 62.1488 24.7905L63.3403 22.2403H70.6189L71.8104 24.7905C71.9819 25.1229 72.1533 25.2608 72.5169 25.2608H74.6366C75.0003 25.2608 75.1968 24.9527 75.0505 24.6486L67.5503 8.75948ZM64.5318 19.6212L66.919 14.4275H66.9943L69.4274 19.6212H64.536H64.5318Z" fill="#181818"/>
+              <path d="M85.565 8.73511H74.9251C74.6576 8.73511 74.461 8.94594 74.461 9.18514V11.1191C74.461 11.3542 74.6576 11.5691 74.9251 11.5691H78.6501V24.8147C78.6501 25.0499 78.8675 25.2648 79.1141 25.2648H81.3801C81.6226 25.2648 81.8442 25.054 81.8442 24.8147V11.5691H85.5692C85.8368 11.5691 86.0332 11.3583 86.0332 11.1191V9.18514C86.0332 8.94999 85.8368 8.73511 85.5692 8.73511H85.565Z" fill="#181818"/>
+              <path d="M102.388 8.73511H100.147C99.8798 8.73511 99.6833 8.94594 99.6833 9.18514V15.441H91.7483V9.18514C91.7483 8.94999 91.5519 8.73511 91.2842 8.73511H89.0183C88.7759 8.73511 88.5542 8.94594 88.5542 9.18514V24.8147C88.5542 25.0499 88.7716 25.2648 89.0183 25.2648H91.2842C91.5519 25.2648 91.7483 25.054 91.7483 24.8147V18.2994H99.6833V24.8147C99.6833 25.0499 99.8798 25.2648 100.147 25.2648H102.388C102.631 25.2648 102.852 25.054 102.852 24.8147V9.18514C102.852 8.94999 102.635 8.73511 102.388 8.73511Z" fill="#181818"/>
+              <path d="M114.876 8.5C110.005 8.5 106.134 12.303 106.134 17.0223C106.134 21.7416 110.005 25.5 114.876 25.5C119.747 25.5 123.639 21.7457 123.639 17.0223C123.639 12.2989 119.747 8.5 114.876 8.5ZM117.702 21.6767L115.344 16.5804C115.273 16.4385 115.173 16.3209 114.93 16.3209H114.688C114.471 16.3209 114.345 16.4385 114.274 16.5804L112.021 21.6524C110.398 20.7037 109.307 18.9846 109.307 17.0223C109.307 14.0464 111.816 11.5692 114.88 11.5692C117.945 11.5692 120.478 14.0464 120.478 17.0223C120.478 19.0008 119.358 20.732 117.702 21.6767Z" fill="#181818"/>
+              <path d="M144.672 24.7216L141.8 8.85273C141.775 8.66217 141.628 8.5 141.361 8.5H140.972C140.755 8.5 140.629 8.59325 140.558 8.73515L135.203 19.8806H135.132L129.772 8.73515C129.701 8.59325 129.554 8.5 129.358 8.5H128.969C128.702 8.5 128.555 8.66623 128.53 8.85273L125.633 24.7175C125.583 25.0499 125.779 25.2608 126.097 25.2608H128.288C128.505 25.2608 128.702 25.0702 128.727 24.9081L130.14 15.9601H130.211L134.521 25.2405C134.596 25.3824 134.718 25.5 134.935 25.5H135.374C135.592 25.5 135.738 25.3824 135.788 25.2405L140.048 15.9601H140.119L141.557 24.9081C141.608 25.0743 141.8 25.2608 142.021 25.2608H144.237C144.555 25.2608 144.747 25.0499 144.676 24.7175L144.672 24.7216Z" fill="#181818"/>
+            </g>
+          </g>
+        </g>
+        <defs>
+          <clipPath id="wm-clip0"><rect width="34" height="34" fill="white"/></clipPath>
+          <clipPath id="wm-clip1"><rect width="96.69" height="17" fill="white" transform="translate(48 8.5)"/></clipPath>
+          <clipPath id="wm-clip2"><rect width="96.6875" height="17" fill="white" transform="translate(48.0013 8.5)"/></clipPath>
+        </defs>
+      </svg>
+    </a>
+    <time class="timestamp" id="utc-clock" datetime="">0000-00-00 00:00:00Z</time>
+  </header>
+
+  <main class="center">
+    <div class="panel" id="panel">
+
+      <div class="panel-eyebrow">PORTAL &middot; LOGIN</div>
+
+      <form class="form" id="form" autocomplete="off" novalidate>
+        <label for="email" class="panel-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          class="panel-input"
+          placeholder="name@domain"
+          autocomplete="off"
+          spellcheck="false"
+          required
+        />
+        <button type="submit" class="panel-button">Login</button>
+        <div class="panel-meta">
+          Access by invitation. A magic link will be sent if the email is enrolled.
+        </div>
+      </form>
+
+      <div class="receipt" id="receipt">
+        <div class="receipt-line">Request received.</div>
+        <div class="receipt-id" id="receipt-id">REQ &middot; 0000-00-00 00:00:00Z &middot; 00000000</div>
+        <div class="panel-meta" style="margin-top: var(--space-5);">
+          If the address is enrolled, a magic link will be delivered within 60 seconds. Check spam.
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-text">&copy; OA FEEDFORWARD</span>
+    <span class="footer-text"><a href="/">&larr; FATHOMSIGNAL.COM</a></span>
+  </footer>
+
+<script>
+  // Live UTC timestamp
+  (function () {
+    var el = document.getElementById('utc-clock');
+    if (!el) return;
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    function tick() {
+      var d = new Date();
+      var s =
+        d.getUTCFullYear() + '-' +
+        pad(d.getUTCMonth() + 1) + '-' +
+        pad(d.getUTCDate()) + ' ' +
+        pad(d.getUTCHours()) + ':' +
+        pad(d.getUTCMinutes()) + ':' +
+        pad(d.getUTCSeconds()) + 'Z';
+      el.textContent = s;
+      el.setAttribute('datetime', d.toISOString());
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+
+  // Form handling: no backend, no auth. Whatever the user enters, the page
+  // returns a generic "request received" acknowledgement. No success state,
+  // no error state, no escape route. The right people will know what to do.
+  (function () {
+    var form = document.getElementById('form');
+    var panel = document.getElementById('panel');
+    var receiptId = document.getElementById('receipt-id');
+    if (!form || !panel || !receiptId) return;
+
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    function shortId() {
+      // Hex-like opaque identifier, 8 chars
+      var chars = 'abcdef0123456789';
+      var out = '';
+      for (var i = 0; i < 8; i++) {
+        out += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return out;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var d = new Date();
+      var ts =
+        d.getUTCFullYear() + '-' +
+        pad(d.getUTCMonth() + 1) + '-' +
+        pad(d.getUTCDate()) + ' ' +
+        pad(d.getUTCHours()) + ':' +
+        pad(d.getUTCMinutes()) + ':' +
+        pad(d.getUTCSeconds()) + 'Z';
+      receiptId.textContent = 'REQ \u00B7 ' + ts + ' \u00B7 ' + shortId();
+      panel.classList.add('submitted');
+    });
+  })();
+</script>
+
+</body>
+</html>

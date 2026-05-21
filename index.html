@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FATHOM</title>
 <meta name="description" content="A precision instrument.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath fill='%23181818' d='M39.96 7.84C22.07 7.84 7.84 22.23 7.84 40.08c0 17.86 14.23 32.07 32.12 32.07s32.2-14.2 32.2-32.07c0-17.87-14.31-32.24-32.2-32.24zm10.37 49.85L41.67 38.41c-0.26-0.54-0.63-0.98-1.52-0.98h-0.89c-0.8 0-1.26 0.44-1.52 0.98L29.46 57.6c-5.96-3.59-9.97-10.09-9.97-17.52 0-11.26 9.22-20.63 20.48-20.63s20.57 9.37 20.57 20.63c0 7.48-4.12 14.03-10.2 17.61z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -90,19 +91,37 @@
      in conic-gradient coordinates where 0deg is at the top). The trail fades
      counterclockwise behind the beam since the sweep is clockwise. */
 
-  /* SOUNDING: outgoing pulse line descends from disc edge */
-  @keyframes pulse-out {
-    0%   { transform: translateY(0);    opacity: 0; }
-    10%  { opacity: 0.55; }
-    80%  { opacity: 0.4; }
-    100% { transform: translateY(140px); opacity: 0; }
-  }
-
-  /* SOUNDING: return pulse line ascends back to disc, faint */
-  @keyframes pulse-return {
-    0%   { transform: translateY(140px); opacity: 0; }
-    20%  { opacity: 0.18; }
-    100% { transform: translateY(0);    opacity: 0; }
+  /* SOUNDING: single continuous signal cycle.
+     One line is emitted from the disc, descends smoothly to the seafloor,
+     touches at zero velocity (no overshoot), accelerates back up, and
+     decelerates as it returns to the disc. Motion is sinusoidal: slow at
+     both endpoints, fast through the middle.
+     Per-keyframe ease-in-out gives natural deceleration at both ends. */
+  @keyframes pulse-cycle {
+    0% {
+      transform: translateY(0) scaleX(1);
+      opacity: 0;
+      animation-timing-function: ease-in-out;
+    }
+    8% {
+      transform: translateY(0) scaleX(1);
+      opacity: 0.7;
+      animation-timing-function: ease-in-out;
+    }
+    50% {
+      transform: translateY(140px) scaleX(1.3);
+      opacity: 0.5;
+      animation-timing-function: ease-in-out;
+    }
+    92% {
+      transform: translateY(0) scaleX(1.95);
+      opacity: 0.14;
+      animation-timing-function: linear;
+    }
+    100% {
+      transform: translateY(0) scaleX(2.0);
+      opacity: 0;
+    }
   }
 
   /* ===================== NOISE OVERLAY ===================== */
@@ -176,7 +195,7 @@
 
   /* Phase: SWEEP — continuous rotation */
   .mark-stage.phase-sweep .mark-rotating {
-    animation: sweep 18s linear infinite;
+    animation: sweep 14s linear infinite;
   }
 
   /* Radar trail: circular conic-gradient sweep that rotates with the mark.
@@ -219,7 +238,7 @@
      Same duration as the mark sweep so they stay locked together. */
   .mark-stage.phase-sweep .radar-trail {
     opacity: 1;
-    animation: sweep 18s linear infinite;
+    animation: sweep 14s linear infinite;
   }
 
   /* ===================== SOUNDING PULSES ===================== */
@@ -228,42 +247,26 @@
      space below the mark. The disc spans y=7.8 to y=72.2 in the 80-unit
      SVG viewBox, so the disc's bottom edge is at ~90% of the mark-stage
      height (since the SVG fills the stage). */
+  /* Pulse lines descend from the disc's bottom edge into the negative
+     space below the mark. Three identical lines fire sequentially, one
+     at a time. Each is an independent signal that descends, bounces, and
+     returns before the next is emitted. */
   .pulse-line {
     position: absolute;
     left: 50%;
     top: 88%;
-    width: 60px;
+    width: 56px;
     height: 1px;
-    margin-left: -30px;
+    margin-left: -28px;
     background: var(--marine-500);
     opacity: 0;
     pointer-events: none;
     z-index: 1;
   }
 
-  .pulse-line.line-2 { width: 50px; margin-left: -25px; }
-  .pulse-line.line-3 { width: 40px; margin-left: -20px; }
-
-  /* Outgoing pulses only animate during sounding phase */
+  /* A single signal per sounding phase. One line, one full bounce. */
   .mark-stage.phase-sound .pulse-line.out-1 {
-    animation: pulse-out 3.2s ease-in 0s 3;
-  }
-  .mark-stage.phase-sound .pulse-line.out-2 {
-    animation: pulse-out 3.2s ease-in 0.25s 3;
-  }
-  .mark-stage.phase-sound .pulse-line.out-3 {
-    animation: pulse-out 3.2s ease-in 0.5s 3;
-  }
-
-  /* Return pulses are fainter, ascend back; staggered to follow outgoing */
-  .mark-stage.phase-sound .pulse-line.ret-1 {
-    animation: pulse-return 2.4s ease-out 1.8s 3;
-  }
-  .mark-stage.phase-sound .pulse-line.ret-2 {
-    animation: pulse-return 2.4s ease-out 2.05s 3;
-  }
-  .mark-stage.phase-sound .pulse-line.ret-3 {
-    animation: pulse-return 2.4s ease-out 2.3s 3;
+    animation: pulse-cycle 5s linear 0s 1;
   }
 
   /* ===================== FOOTER ===================== */
@@ -315,7 +318,7 @@
   }
 
   .hairline-bottom {
-    bottom: calc(var(--space-7) + 44px);
+    bottom: calc(var(--space-7) + 62px);
     left: var(--space-7);
     right: var(--space-7);
     height: 1px;
@@ -332,16 +335,14 @@
       right: var(--space-5);
     }
     .hairline-bottom {
-      bottom: calc(var(--space-5) + 40px);
+      bottom: calc(var(--space-5) + 56px);
       left: var(--space-5);
       right: var(--space-5);
     }
     .footer-text { font-size: 9px; }
     .timestamp { font-size: 10px; }
     .wordmark { height: 18px; }
-    .pulse-line { width: 48px; margin-left: -24px; }
-    .pulse-line.line-2 { width: 40px; margin-left: -20px; }
-    .pulse-line.line-3 { width: 32px; margin-left: -16px; }
+    .pulse-line { width: 44px; margin-left: -22px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -407,13 +408,10 @@
   <main class="center">
     <div class="mark-stage" id="mark-stage" aria-label="FATHOM mark">
 
-      <!-- Sounding pulse lines: descend from disc edge during sound phase -->
-      <div class="pulse-line line-1 out-1" aria-hidden="true"></div>
-      <div class="pulse-line line-2 out-2" aria-hidden="true"></div>
-      <div class="pulse-line line-3 out-3" aria-hidden="true"></div>
-      <div class="pulse-line line-1 ret-1" aria-hidden="true"></div>
-      <div class="pulse-line line-2 ret-2" aria-hidden="true"></div>
-      <div class="pulse-line line-3 ret-3" aria-hidden="true"></div>
+      <!-- Sounding pulse: a single line descends from the disc edge, touches
+           the seafloor at zero velocity, and returns as a wider, fainter echo.
+           One full continuous bounce per sounding phase. -->
+      <div class="pulse-line out-1" aria-hidden="true"></div>
 
       <!-- Radar trail: sweeps behind the wedge beam in the direction of rotation -->
       <div class="radar-trail-wrap" aria-hidden="true">
@@ -436,6 +434,7 @@
   <footer class="footer">
     <span class="footer-text">&copy; OA FEEDFORWARD</span>
     <span class="footer-text"><a href="mailto:team@fathomsignal.com">TEAM@FATHOMSIGNAL.COM</a></span>
+    <span class="footer-text"><a href="/login.html">PORTAL LOGIN &rarr;</a></span>
   </footer>
 
 <script>
@@ -474,11 +473,17 @@
   var freezeAnims = [];
 
   // Phase timings (ms)
-  var SWEEP_DURATION   = 30000;
+  // First sweep is one full rotation; subsequent sweeps are three full
+  // rotations. Sweep duration is always a clean multiple of the 14s
+  // rotation period so the wedge naturally lands at rest when sweep ends.
+  var SWEEP_FIRST      = 14000;   // 1 rotation
+  var SWEEP_SUBSEQUENT = 42000;   // 3 rotations
   var SILENCE_TO_SOUND = 2200;
-  var SOUND_DURATION   = 13000;
+  var SOUND_DURATION   = 6000;
   var SILENCE_TO_SWEEP = 2200;
   var FREEZE_DURATION  = 1800;
+
+  var cycleIndex = 0;  // tracks which cycle we're on
 
   function setPhase(name) {
     if (!stage) return;
@@ -557,7 +562,10 @@
   }
 
   function runCycle() {
-    // SWEEP
+    // First sweep is 1 rotation; every subsequent sweep is 3 rotations.
+    var sweepDuration = (cycleIndex === 0) ? SWEEP_FIRST : SWEEP_SUBSEQUENT;
+    cycleIndex++;
+
     resumeSweep();
 
     setTimeout(function () {
@@ -574,7 +582,7 @@
           }, SILENCE_TO_SWEEP);
         }, SOUND_DURATION);
       }, SILENCE_TO_SOUND);
-    }, SWEEP_DURATION);
+    }, sweepDuration);
   }
 
   // Kick off the page after initial fade-in, matching the prior 2s delay
