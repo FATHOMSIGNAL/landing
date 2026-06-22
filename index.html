@@ -362,7 +362,7 @@
   <div class="hairline hairline-bottom"></div>
 
   <header class="header">
-    <svg class="wordmark" viewBox="0 0 145 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="FATHOM">
+    <svg class="wordmark" viewBox="0 0 145 34" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FATHOM">
       <g clip-path="url(#wm-clip0)">
         <mask id="wm-mask0" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="3" y="3" width="28" height="28">
           <path d="M30.6667 3.33325H3.33333V30.6666H30.6667V3.33325Z" fill="white"/>
@@ -400,7 +400,7 @@
   </header>
 
   <main class="center">
-    <div class="mark-stage" id="mark-stage" aria-label="FATHOM mark">
+    <div class="mark-stage" id="mark-stage" aria-hidden="true">
 
       <!-- Sounding pulse: a single line descends from the disc edge, touches
            the seafloor at zero velocity, and returns as a wider, fainter echo.
@@ -423,7 +423,9 @@
   <footer class="footer">
     <span class="footer-text">&copy; OA FEEDFORWARD</span>
     <span class="footer-text"><a href="mailto:team@fathomsignal.com">TEAM@FATHOMSIGNAL.COM</a></span>
-    <span class="footer-text"><a href="/login.html">PORTAL LOGIN &rarr;</a></span>
+    <nav class="footer-text" aria-label="Site">
+      <a href="/why.html">WHY</a> &middot; <a href="/faq.html">FAQ</a> &middot; <a href="https://app.fathomsignal.com/login">PORTAL LOGIN &rarr;</a>
+    </nav>
   </footer>
 
 <script>

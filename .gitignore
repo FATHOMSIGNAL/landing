@@ -1,0 +1,11 @@
+# Only the product surfaces are committed and deployed:
+#   index.html, why.html, faq.html
+# Everything below is local-only tooling. Git never pushes it; Vercel never serves it.
+
+node_modules/
+package.json
+package-lock.json
+.htmlvalidate.json
+qa/
+CLAUDE.local.md
+.DS_Store
