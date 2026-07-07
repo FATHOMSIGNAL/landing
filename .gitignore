@@ -1,5 +1,5 @@
 # Only the product surfaces are committed and deployed:
-#   index.html, why.html, faq.html
+#   index.html, mission.html, vercel.json
 # Everything below is local-only tooling. Git never pushes it; Vercel never serves it.
 
 node_modules/

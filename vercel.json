@@ -1,0 +1,34 @@
+{
+  "redirects": [
+    {
+      "source": "/why.html",
+      "destination": "/mission.html",
+      "permanent": true
+    },
+    {
+      "source": "/why",
+      "destination": "/mission.html",
+      "permanent": true
+    },
+    {
+      "source": "/faq.html",
+      "destination": "/mission.html",
+      "permanent": true
+    },
+    {
+      "source": "/faq",
+      "destination": "/mission.html",
+      "permanent": true
+    },
+    {
+      "source": "/login.html",
+      "destination": "https://app.fathomsignal.com/login",
+      "permanent": true
+    },
+    {
+      "source": "/login",
+      "destination": "https://app.fathomsignal.com/login",
+      "permanent": true
+    }
+  ]
+}
