@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 &middot; FATHOM</title>
+<meta name="description" content="Page not found.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath fill='%23232322' d='M39.96 7.84C22.07 7.84 7.84 22.23 7.84 40.08c0 17.86 14.23 32.07 32.12 32.07s32.2-14.2 32.2-32.07c0-17.87-14.31-32.24-32.2-32.24zm10.37 49.85L41.67 38.41c-0.26-0.54-0.63-0.98-1.52-0.98h-0.89c-0.8 0-1.26 0.44-1.52 0.98L29.46 57.6c-5.96-3.59-9.97-10.09-9.97-17.52 0-11.26 9.22-20.63 20.48-20.63s20.57 9.37 20.57 20.63c0 7.48-4.12 14.03-10.2 17.61z'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink-900: #181818; --ink-700: #2E2E2D; --ink-500: #6F6E6B; --ink-200: #D4D0C9;
+    --paper-100: #FFFFFE; --paper-300: #F4F2EE;
+    --marine-500: #2C5F7C;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --space-5: 24px; --space-7: 48px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--paper-300); color: var(--ink-900); font-family: var(--font-mono); -webkit-font-smoothing: antialiased; }
+  body { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; padding: var(--space-7); }
+  .noise { position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: 0.05; mix-blend-mode: multiply; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); background-size: 200px 200px; }
+  .center { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-5); text-align: center; }
+  .code { font-size: 44px; font-weight: 500; letter-spacing: 0.08em; }
+  .note { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-500); }
+  a.home { font-size: 12px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; color: var(--marine-500); border: 1px solid var(--marine-500); padding: 14px 32px; transition: background 200ms ease, color 200ms ease; }
+  a.home:hover { background: var(--marine-500); color: var(--paper-100); }
+  a:focus-visible { outline: 2px solid var(--marine-500); outline-offset: 3px; border-radius: 2px; }
+  .footer { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .footer-text { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-500); }
+  .footer-text a { color: var(--ink-500); text-decoration: none; }
+  .footer-text a:hover { color: var(--ink-900); }
+</style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <main class="center">
+    <div class="code">404</div>
+    <p class="note">No reading at this position.</p>
+    <a class="home" href="/">Return &rarr;</a>
+  </main>
+  <footer class="footer">
+    <span class="footer-text">&copy; 2026 OA FEEDFORWARD</span>
+    <span class="footer-text"><a href="mailto:team@fathomsignal.com">TEAM@FATHOMSIGNAL.COM</a></span>
+  </footer>
+</body>
+</html>
