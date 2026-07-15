@@ -334,6 +334,24 @@
     color: var(--ink-900);
   }
 
+  /* Mission sits above the legal links in ink, as the page's one destination
+     for visitors without an account. The legal links recede below it. */
+  .footer-mission {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-900);
+    margin-bottom: 4px;
+    transition: color 200ms ease;
+  }
+
+  .footer-mission:hover {
+    color: var(--marine-500);
+  }
+
   /* ===================== HAIRLINES ===================== */
 
   .hairline {
@@ -352,7 +370,7 @@
   }
 
   .hairline-bottom {
-    bottom: calc(var(--space-7) + 62px);
+    bottom: calc(var(--space-7) + 82px);
     left: var(--space-7);
     right: var(--space-7);
     height: 1px;
@@ -369,11 +387,11 @@
       right: var(--space-5);
     }
     .hairline-bottom {
-      bottom: calc(var(--space-5) + 56px);
+      bottom: calc(var(--space-5) + 75px);
       left: var(--space-5);
       right: var(--space-5);
     }
-    .footer-text { font-size: 9px; }
+    .footer-text, .footer-mission { font-size: 9px; }
     .timestamp { font-size: 10px; }
     .wordmark { height: 12px; }
     .pulse-line { width: 44px; margin-left: -22px; }
@@ -414,7 +432,7 @@
 
     <div class="header-meta">
       <time class="timestamp" id="utc-clock" datetime="">0000-00-00 00:00:00Z</time>
-      <span class="readout" id="readout">BRG 000&deg;</span>
+      <span class="readout" id="readout">SIG 0.42</span>
     </div>
   </header>
 
@@ -442,10 +460,11 @@
   </main>
 
   <footer class="footer">
+    <a class="footer-mission" href="/mission.html">MISSION &rarr;</a>
     <span class="footer-text">&copy; 2026 OA FEEDFORWARD</span>
     <span class="footer-text"><a href="mailto:team@fathomsignal.com">TEAM@FATHOMSIGNAL.COM</a></span>
     <nav class="footer-text" aria-label="Site">
-      <a href="/mission.html">MISSION</a> &middot; <a href="/privacy.html">PRIVACY</a> &middot; <a href="/terms.html">TERMS</a>
+      <a href="/privacy.html">PRIVACY</a> &middot; <a href="/terms.html">TERMS</a>
     </nav>
   </footer>
 
@@ -598,7 +617,8 @@
   var rotator = stage ? stage.querySelector('.mark-rotating') : null;
   var readout = document.getElementById('readout');
   var freezeAnims = [];
-  var bearingRaf = null;
+  var sigTimer = null;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Phase timings (ms)
   // First sweep is one full rotation; subsequent sweeps are three full
@@ -633,30 +653,34 @@
     readout.textContent = text;
   }
 
-  function pad3(n) {
-    n = Math.floor(n);
-    if (n < 10) return '00' + n;
-    if (n < 100) return '0' + n;
-    return '' + n;
-  }
-
-  function startBearingLoop() {
-    stopBearingLoop();
+  // SIGNAL: the sweep-phase readout. Deliberately not derived from the mark's
+  // rotation \u2014 the instrument is listening, not locating, so the value drifts
+  // independently of where the wedge happens to be pointing.
+  //
+  // Two sine waves of unrelated periods are summed so the number wanders
+  // without settling into an audible-looking beat; a single wave would visibly
+  // repeat. Sampled at 5Hz rather than per-frame because a real instrument
+  // reports at a sample rate, and a 60fps last digit reads as blur.
+  function startSignalLoop() {
+    stopSignalLoop();
+    if (reduceMotion) {
+      setReadoutText('SIG 0.42');
+      return;
+    }
+    var t0 = Date.now();
     function tick() {
-      // Bearing = current CSS rotation, normalized 0-359 deg.
-      // CSS rotation 0 = wedge points up = bearing 000 (north).
-      // CSS rotation 90 = wedge points right = bearing 090 (east).
-      var bearing = readRotation(rotator) % 360;
-      setReadoutText('BRG ' + pad3(bearing) + '\u00B0');
-      bearingRaf = requestAnimationFrame(tick);
+      var t = (Date.now() - t0) / 1000;
+      var v = 0.42 + Math.sin(t / 3.1) * 0.06 + Math.sin(t / 1.13) * 0.025;
+      setReadoutText('SIG ' + v.toFixed(2));
     }
     tick();
+    sigTimer = setInterval(tick, 200);
   }
 
-  function stopBearingLoop() {
-    if (bearingRaf) {
-      cancelAnimationFrame(bearingRaf);
-      bearingRaf = null;
+  function stopSignalLoop() {
+    if (sigTimer) {
+      clearInterval(sigTimer);
+      sigTimer = null;
     }
   }
 
@@ -738,11 +762,11 @@
     // SWEEP — show live bearing readout
     resumeSweep();
     showReadout(true);
-    startBearingLoop();
+    startSignalLoop();
 
     setTimeout(function () {
       // Transition: ease sweep to a stop at wedge rest
-      stopBearingLoop();
+      stopSignalLoop();
       freezeRotatorAtZero();
       // Brief silence during the freeze transition
       showReadout(false);
