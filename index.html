@@ -94,7 +94,13 @@
      touches at zero velocity (no overshoot), accelerates back up, and
      decelerates as it returns to the disc. Motion is sinusoidal: slow at
      both endpoints, fast through the middle.
-     Per-keyframe ease-in-out gives natural deceleration at both ends. */
+     Per-keyframe ease-in-out gives natural deceleration at both ends.
+
+     The seafloor is the bottom hairline. Its distance from the pulse's
+     origin depends on viewport height, so the travel cannot be a constant
+     here: --pulse-travel is measured and written by the travel controller
+     at the foot of this file. The 140px fallback is the pre-2026-07-16
+     fixed value, used only if that script does not run. */
   @keyframes pulse-cycle {
     0% {
       transform: translateY(0) scaleX(1);
@@ -107,7 +113,7 @@
       animation-timing-function: ease-in-out;
     }
     50% {
-      transform: translateY(140px) scaleX(1.3);
+      transform: translateY(var(--pulse-travel, 140px)) scaleX(1.3);
       opacity: 0.5;
       animation-timing-function: ease-in-out;
     }
@@ -210,12 +216,20 @@
 
   /* ===================== CENTER ===================== */
 
+  /* 24px rather than 48px: the CTA stack grew by a second button, and the
+     band between the rules has to hold mark + gap + stack. The tighter gap
+     buys back enough to fit down to a 568px-tall viewport (572px for no
+     overlap at all); below that the stack punches through the bottom rule
+     into the footer, and the only thing left to shrink is the mark. Safe to
+     tighten because the pulse now travels past the stack to the bottom rule,
+     so the buttons' position no longer interacts with where it comes to rest.
+     Measured 2026-07-16; qa/run.mjs asserts it. */
   .center {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-7);
+    gap: var(--space-5);
     position: relative;
   }
 
@@ -242,6 +256,48 @@
   .login-cta:hover {
     background: var(--marine-500);
     color: var(--paper-100);
+  }
+
+  /* Log in and Apply stack under the mark. Opaque across the whole stack,
+     gap included: the pulse transits this region on its way to and from the
+     bottom rule, and a transparent gap between the buttons would strobe it
+     twice per cycle. Masking here is what lets the pulse pass behind the
+     stack as one solid object. */
+  .cta-stack {
+    position: relative;
+    z-index: 3;
+    background: var(--paper-300);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  /* Secondary CTA. Log in keeps the bordered box because it is the door for
+     people who already have accounts. Apply is the door for everyone else and
+     recedes to ink, so it reads without competing for the eye. Solid paper
+     background masks the sounding pulse the same way .login-cta does, since
+     the pulse travels further relative to the mark at small viewports. */
+  .apply-cta {
+    position: relative;
+    z-index: 3;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-500);
+    background: var(--paper-300);
+    border: 1px solid transparent;
+    padding: 14px 32px;
+    opacity: 0;
+    animation: fade-in 800ms ease-out 1150ms forwards;
+    transition: color 200ms ease;
+  }
+
+  .apply-cta:hover {
+    color: var(--ink-900);
   }
 
   a:focus-visible {
@@ -298,9 +354,11 @@
     z-index: 1;
   }
 
-  /* A single signal per sounding phase. One line, one full bounce. */
+  /* A single signal per sounding phase. One line, one full bounce.
+     6s fills the 6s of movement inside the 7s SOUND phase, leaving the
+     1s of stillness the phase controller holds before the silence. */
   .mark-stage.phase-sound .pulse-line.out-1 {
-    animation: pulse-cycle 5s linear 0s 1;
+    animation: pulse-cycle 6s linear 0s 1;
   }
 
   /* ===================== FOOTER ===================== */
@@ -396,6 +454,8 @@
     .wordmark { height: 12px; }
     .pulse-line { width: 44px; margin-left: -22px; }
     .login-cta { font-size: 11px; padding: 12px 24px; }
+    .apply-cta { font-size: 11px; padding: 12px 24px; }
+    .cta-stack { gap: var(--space-3); }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -411,7 +471,7 @@
       animation: none;
       transform: scaleX(1);
     }
-    .header, .footer, .mark-stage, .login-cta {
+    .header, .footer, .mark-stage, .login-cta, .apply-cta {
       animation: none;
       opacity: 1;
     }
@@ -456,7 +516,10 @@
       </svg>
     </div>
 
-    <a class="login-cta" href="https://app.fathomsignal.com/login">Log in &rarr;</a>
+    <div class="cta-stack">
+      <a class="login-cta" href="https://app.fathomsignal.com/login">Log in &rarr;</a>
+      <a class="apply-cta" href="/apply.html">Apply &rarr;</a>
+    </div>
   </main>
 
   <footer class="footer">
@@ -607,10 +670,77 @@
     }
   })();
 
+  // ===== Sounding travel =====
+  // The pulse descends to the bottom hairline: that rule is the seafloor.
+  // The distance cannot be a constant in the keyframe, because the mark is
+  // sized min(38vmin, 340px) and so scales with the viewport, while the
+  // hairline is pinned relative to the bottom of the page. Measure the gap
+  // between the pulse's origin and the rule, and hand it to CSS as
+  // --pulse-travel for @keyframes pulse-cycle to read.
+  (function () {
+    var stageEl = document.getElementById('mark-stage');
+    var floor = document.querySelector('.hairline-bottom');
+    var pulseLine = stageEl ? stageEl.querySelector('.pulse-line') : null;
+    if (!stageEl || !floor || !pulseLine) return;
+
+    function setTravel() {
+      var s = stageEl.getBoundingClientRect();
+      var f = floor.getBoundingClientRect();
+      // .pulse-line sits at top: 88% of the mark stage. Both it and the
+      // hairline are 1px, and the line comes to rest ON the rule rather
+      // than above it, so the target is the rule's own top edge and the
+      // two coincide exactly at the bottom of the bounce.
+      var origin = s.top + s.height * 0.88;
+      var travel = Math.round(f.top - origin);
+      document.documentElement.style.setProperty(
+        '--pulse-travel', (travel > 0 ? travel : 0) + 'px'
+      );
+    }
+
+    // Measured off the rendered box, so it has to wait for two things to
+    // settle. The mark's entry animation runs scale(0.96) -> scale(1) and
+    // getBoundingClientRect reports the transformed box, so measuring
+    // mid-animation reads about 4% short. And the web font changes the
+    // footer's height, which moves the rule: measuring before it loads reads
+    // about 2px short. Measure on whichever of these lands, and again after
+    // both must have.
+    var anims = stageEl.getAnimations ? stageEl.getAnimations() : [];
+    if (anims.length) {
+      Promise.all(anims.map(function (a) { return a.finished; }))
+        .then(setTravel)
+        .catch(setTravel);
+    } else {
+      // Reduced motion: no entry animation to wait on. This runs immediately
+      // and is the path where the font matters, so fonts.ready below is doing
+      // real work rather than belt and braces.
+      setTravel();
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(setTravel).catch(function () {});
+    }
+    setTimeout(setTravel, 2200);
+
+    // Throttled to a frame, deliberately not debounced. A debounce never
+    // settles during a continuous drag, so the travel stays pinned at its
+    // pre-drag value and the line ends up as much as 100px below the rule,
+    // floating in the footer, for as long as the drag lasts. Recomputing per
+    // frame holds it on the rule to within a pixel. Two rect reads a frame
+    // while the pointer is down is not a cost worth optimising against.
+    var rafPending = false;
+    window.addEventListener('resize', function () {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(function () {
+        rafPending = false;
+        setTravel();
+      });
+    });
+  })();
+
   // ===== Phase controller =====
   // The page alternates between two modes:
-  //   SWEEP   — mark rotates, bearing readout updates live
-  //   SOUND   — mark holds at rest, depth readout displayed throughout
+  //   SWEEP — mark rotates, bearing readout updates live
+  //   SOUND — mark holds at rest, depth readout displayed throughout
   // Brief silences bracket each phase transition.
 
   var stage = document.getElementById('mark-stage');
@@ -627,7 +757,11 @@
   var SWEEP_FIRST      = 14000;   // 1 rotation
   var SWEEP_SUBSEQUENT = 42000;   // 3 rotations
   var SILENCE_TO_SOUND = 2200;
-  var SOUND_DURATION   = 6000;
+  // 7000 = the 6s pulse plus 1s of stillness after the line comes home,
+  // before the silence. The pulse used to be 5s inside a 6s phase, which
+  // gave the same 1s hold; the hold is deliberate, so the phase grew with
+  // the pulse rather than absorbing it.
+  var SOUND_DURATION   = 7000;
   var SILENCE_TO_SWEEP = 2200;
   var FREEZE_DURATION  = 1800;
 
