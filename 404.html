@@ -1,58 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>404 &middot; FATHOM</title>
-<meta name="description" content="Page not found.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not found · Fathom</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath fill='%23232322' d='M39.96 7.84C22.07 7.84 7.84 22.23 7.84 40.08c0 17.86 14.23 32.07 32.12 32.07s32.2-14.2 32.2-32.07c0-17.87-14.31-32.24-32.2-32.24zm10.37 49.85L41.67 38.41c-0.26-0.54-0.63-0.98-1.52-0.98h-0.89c-0.8 0-1.26 0.44-1.52 0.98L29.46 57.6c-5.96-3.59-9.97-10.09-9.97-17.52 0-11.26 9.22-20.63 20.48-20.63s20.57 9.37 20.57 20.63c0 7.48-4.12 14.03-10.2 17.61z'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --ink-900: #181818; --ink-700: #2E2E2D; --ink-500: #6F6E6B; --ink-200: #D4D0C9;
-    --paper-100: #FFFFFE; --paper-300: #F4F2EE;
-    --marine-500: #2C5F7C;
-    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-    --space-5: 24px; --space-7: 48px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--paper-300); color: var(--ink-900); font-family: var(--font-mono); -webkit-font-smoothing: antialiased; }
-  body { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; padding: var(--space-7); }
-  .noise { position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: 0.05; mix-blend-mode: multiply; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); background-size: 200px 200px; }
-  .center { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-5); text-align: center; }
-  .code { font-size: 44px; font-weight: 500; letter-spacing: 0.08em; }
-  .note { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-500); }
-  a.home { font-size: 12px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; color: var(--marine-500); border: 1px solid var(--marine-500); padding: 14px 32px; transition: background 200ms ease, color 200ms ease; }
-  a.home:hover { background: var(--marine-500); color: var(--paper-100); }
-  a:focus-visible { outline: 2px solid var(--marine-500); outline-offset: 3px; border-radius: 2px; }
-  .footer { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .footer-text { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-500); }
-  .footer-text a { color: var(--ink-500); text-decoration: none; }
-  .footer-text a:hover { color: var(--ink-900); }
-  .footer-mission { font-size: 10px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; color: var(--ink-900); margin-bottom: 4px; }
-  .footer-mission:hover { color: var(--marine-500); }
-  .footer-nav a { display: inline-block; padding: 6px 2px; }
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&amp;family=Literata:ital,wght@0,400;0,500;1,400&amp;display=swap">
+<link rel="stylesheet" href="/site.css">
 </head>
 <body>
-  <div class="noise" aria-hidden="true"></div>
-  <main class="center">
-    <div class="code">404</div>
-    <p class="note">No reading at this position.</p>
-    <a class="home" href="/">Return &rarr;</a>
-  </main>
-  <footer class="footer">
-    <a class="footer-mission" href="/mission.html">MISSION &rarr;</a>
-    <span class="footer-text">&copy; 2026 Fathom Signal</span>
-    <span class="footer-text"><a href="mailto:team@fathomsignal.com">TEAM@FATHOMSIGNAL.COM</a></span>
-    <nav class="footer-text footer-nav" aria-label="Site">
-      <a href="/privacy.html">PRIVACY</a> &middot; <a href="/terms.html">TERMS</a>
-    </nav>
-  </footer>
+<div class="site">
+<header class="site-bar">
+<a class="home" href="/" aria-label="Fathom home"><svg class="lockup" viewBox="0 0 124.6 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fathom"><g class="turn"><g transform="translate(-2.9268 -2.9268) scale(0.292683)"><path d="M50.951 10C28.1352 10 10 28.3439 10 51.1076C10 73.8712 28.1352 92 50.951 92C73.7669 92 92 73.8908 92 51.1076C92 28.3244 73.7473 10 50.951 10ZM64.1705 73.5583L53.1249 48.9759C52.792 48.2914 52.3219 47.7243 51.1861 47.7243H50.0502C49.0318 47.7243 48.4442 48.2914 48.1113 48.9759L37.5553 73.441C29.9565 68.8648 24.845 60.5729 24.845 51.1076C24.845 36.7532 36.5957 24.8042 50.951 24.8042C65.3064 24.8042 77.1746 36.7532 77.1746 51.1076C77.1746 60.6511 71.926 69.0017 64.1705 73.5583Z" fill="#181611"></path></g></g><g transform="translate(33.6 4)"><path d="M9.76223 0.221329H0.436762C0.184935 0.221329 0 0.423571 0 0.644892V15.3551C0 15.5764 0.184935 15.7787 0.436762 15.7787H2.54581C2.77403 15.7787 2.98257 15.5803 2.98257 15.3551V9.73433H8.64081C8.86903 9.73433 9.07757 9.5359 9.07757 9.31076V7.49059C9.07757 7.26927 8.87296 7.06702 8.64081 7.06702H2.97864V2.88863H9.76223C10.0141 2.88863 10.199 2.69021 10.199 2.46507V0.644892C10.199 0.423571 10.0141 0.221329 9.76223 0.221329Z" fill="#181611"></path><path d="M18.3991 0.244217C18.3283 0.110661 18.2378 0 18.0095 0H17.7813C17.5767 0 17.4587 0.110661 17.3918 0.244217L10.2659 15.1987C10.1282 15.4887 10.3131 15.7749 10.6554 15.7749H12.6504C13.0163 15.7749 13.2248 15.5535 13.3153 15.3322L14.4368 12.932H21.2872L22.4086 15.3322C22.57 15.6451 22.7313 15.7749 23.0736 15.7749H25.0686C25.4109 15.7749 25.5958 15.4849 25.4581 15.1987L18.3991 0.244217ZM15.5582 10.467L17.8049 5.57882H17.8758L20.1658 10.467H15.5621H15.5582Z" fill="#181611"></path><path d="M35.3541 0.221329H25.3401C25.0883 0.221329 24.9033 0.419755 24.9033 0.644892V2.46507C24.9033 2.68639 25.0883 2.88863 25.3401 2.88863H28.846V15.3551C28.846 15.5764 29.0506 15.7787 29.2827 15.7787H31.4154C31.6436 15.7787 31.8522 15.5803 31.8522 15.3551V2.88863H35.3581C35.6099 2.88863 35.7948 2.69021 35.7948 2.46507V0.644892C35.7948 0.423571 35.6099 0.221329 35.3581 0.221329H35.3541Z" fill="#181611"></path><path d="M51.1877 0.221329H49.0787C48.8269 0.221329 48.6419 0.419755 48.6419 0.644892V6.5328H41.1737V0.644892C41.1737 0.423571 40.9888 0.221329 40.7369 0.221329H38.6043C38.3761 0.221329 38.1675 0.419755 38.1675 0.644892V15.3551C38.1675 15.5764 38.3721 15.7787 38.6043 15.7787H40.7369C40.9888 15.7787 41.1737 15.5803 41.1737 15.3551V9.223H48.6419V15.3551C48.6419 15.5764 48.8269 15.7787 49.0787 15.7787H51.1877C51.416 15.7787 51.6245 15.5803 51.6245 15.3551V0.644892C51.6245 0.423571 51.4199 0.221329 51.1877 0.221329Z" fill="#181611"></path><path fill-rule="evenodd" d="M62.941 0C58.3569 0 54.7133 3.5793 54.7133 8.02099C54.7133 12.4627 58.3569 16 62.941 16C67.525 16 71.1883 12.4665 71.1883 8.02099C71.1883 3.57548 67.525 0 62.941 0ZM57.7 8.02A5.257 5.131 0 1 0 68.214 8.02A5.257 5.131 0 1 0 57.7 8.02Z" fill="#181611"></path><path d="M90.9842 15.2674L88.281 0.331982C88.2574 0.152635 88.1197 0 87.8679 0H87.502C87.2973 0 87.1793 0.0877653 87.1124 0.221321L82.0719 10.7112H82.005L76.9606 0.221321C76.8937 0.0877653 76.756 0 76.5711 0H76.2052C75.9533 0 75.8156 0.156451 75.792 0.331982L73.0652 15.2635C73.018 15.5764 73.2029 15.7749 73.502 15.7749H75.5638C75.7684 15.7749 75.9533 15.5955 75.9769 15.4429L77.3069 7.02123H77.3738L81.4306 15.7558C81.5014 15.8893 81.6155 16 81.8201 16H82.2333C82.4379 16 82.5756 15.8893 82.6228 15.7558L86.6324 7.02123H86.6993L88.0528 15.4429C88.1 15.5993 88.281 15.7749 88.4896 15.7749H90.575C90.8741 15.7749 91.0551 15.5764 90.9882 15.2635L90.9842 15.2674Z" fill="#181611"></path></g></svg></a>
+<nav class="site-nav" aria-label="Site"><a href="/mission.html">Mission</a><a href="/how-it-works.html">How it works</a><a href="https://canvas.fathomsignal.com/apply">Apply</a><a href="https://canvas.fathomsignal.com/connect">Connect</a></nav>
+</header>
+<main class="site-main center" style="flex-direction: column; gap: 16px; text-align: center;">
+<p style="margin: 0; font: 400 64px/1 var(--mono); letter-spacing: .1em; color: var(--ink-3); font-variant-numeric: tabular-nums;">404</p>
+<p class="b" style="margin: 0 0 16px;">No reading at this position.</p>
+<a class="k" href="/">Return</a>
+</main>
+<footer class="site-foot"><span>© 2026 Fathom Signal</span><a href="mailto:team@fathomsignal.com">team@fathomsignal.com</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></footer>
+</div>
 </body>
 </html>
