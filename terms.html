@@ -1,187 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terms &middot; FATHOM</title>
-<meta name="description" content="Terms of service for the FATHOM platform and website.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terms · Fathom</title>
+<meta name="description" content="The Fathom Terms of Service.">
 <link rel="canonical" href="https://www.fathomsignal.com/terms.html">
-<meta property="og:title" content="Terms &middot; FATHOM">
-<meta property="og:description" content="Terms of service for the FATHOM platform and website.">
+<meta property="og:title" content="Terms · Fathom">
+<meta property="og:description" content="The Fathom Terms of Service.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.fathomsignal.com/terms.html">
 <meta property="og:image" content="https://www.fathomsignal.com/og-image.png">
-<meta property="og:site_name" content="FATHOM">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Fathom">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.fathomsignal.com/og-image.png">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath fill='%23232322' d='M39.96 7.84C22.07 7.84 7.84 22.23 7.84 40.08c0 17.86 14.23 32.07 32.12 32.07s32.2-14.2 32.2-32.07c0-17.87-14.31-32.24-32.2-32.24zm10.37 49.85L41.67 38.41c-0.26-0.54-0.63-0.98-1.52-0.98h-0.89c-0.8 0-1.26 0.44-1.52 0.98L29.46 57.6c-5.96-3.59-9.97-10.09-9.97-17.52 0-11.26 9.22-20.63 20.48-20.63s20.57 9.37 20.57 20.63c0 7.48-4.12 14.03-10.2 17.61z'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --ink-900: #181818; --ink-700: #2E2E2D; --ink-500: #6F6E6B; --ink-200: #D4D0C9;
-    --paper-100: #FFFFFE; --paper-300: #F4F2EE;
-    --marine-500: #2C5F7C;
-    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-    --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--paper-300); color: var(--ink-900); font-family: var(--font-mono); -webkit-font-smoothing: antialiased; }
-  body { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; padding: var(--space-7); }
-  .noise { position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: 0.05; mix-blend-mode: multiply; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); background-size: 200px 200px; }
-  .header { flex: 0 0 auto; display: flex; justify-content: space-between; align-items: center; }
-  a.wordmark { height: 14px; display: block; line-height: 0; }
-  a.wordmark svg { height: 14px; width: auto; display: block; }
-  .timestamp { font-size: 11px; letter-spacing: 0.04em; color: var(--ink-500); font-variant-numeric: tabular-nums; }
-  .rule { flex: 0 0 auto; height: 1px; width: 100%; background: var(--ink-200); }
-  .rule-top { margin-top: var(--space-5); }
-  .rule-bottom { margin-bottom: var(--space-5); }
-  .content { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; padding: var(--space-6) 0; }
-  .column { width: 100%; max-width: 680px; }
-  .page-title { font-size: 44px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: var(--space-4); }
-  .updated { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-500); margin-bottom: var(--space-6); }
-  .section-title { font-size: 18px; font-weight: 500; letter-spacing: 0.02em; margin: var(--space-7) 0 var(--space-5); }
-  .prose p, .prose li { font-size: 14px; line-height: 1.7; color: var(--ink-700); }
-  .prose p { margin-bottom: var(--space-5); }
-  .prose ul { margin: 0 0 var(--space-5) 20px; }
-  .prose li { margin-bottom: 8px; }
-  .prose strong { font-weight: 500; color: var(--ink-900); }
-  .prose a { color: var(--marine-500); text-decoration: underline; text-underline-offset: 3px; }
-  .prose a:hover { color: var(--ink-900); }
-  .footer { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; }
-  .footer-text { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-500); }
-  .footer-text a { color: var(--ink-500); text-decoration: none; }
-  .footer-text a:hover { color: var(--ink-900); }
-  .footer-mission { font-size: 10px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; color: var(--ink-900); margin-bottom: 4px; }
-  .footer-mission:hover { color: var(--marine-500); }
-  .footer-nav a { display: inline-block; padding: 6px 2px; }
-  a:focus-visible { outline: 2px solid var(--marine-500); outline-offset: 3px; border-radius: 2px; }
-  @media (max-width: 640px) { body { padding: var(--space-5); } .page-title { font-size: 32px; } }
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&amp;family=Literata:ital,wght@0,400;0,500;1,400&amp;display=swap">
+<link rel="stylesheet" href="/site.css">
 </head>
 <body>
-
-  <div class="noise" aria-hidden="true"></div>
-
-  <header class="header">
-    <a href="/" class="wordmark" aria-label="FATHOM home">
-      <svg viewBox="48 8.5 96.69 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M58.3736 8.73511H48.4653C48.1977 8.73511 48.0013 8.94999 48.0013 9.18514V24.8147C48.0013 25.0499 48.1977 25.2648 48.4653 25.2648H50.7062C50.9487 25.2648 51.1702 25.054 51.1702 24.8147V18.8427H57.1821C57.4246 18.8427 57.6462 18.6318 57.6462 18.3926V16.4587C57.6462 16.2235 57.4288 16.0087 57.1821 16.0087H51.1661V11.5691H58.3736C58.6412 11.5691 58.8377 11.3583 58.8377 11.1191V9.18514C58.8377 8.94999 58.6412 8.73511 58.3736 8.73511Z" fill="#232322"/><path d="M67.5503 8.75948C67.4751 8.61758 67.3789 8.5 67.1363 8.5H66.8939C66.6765 8.5 66.5511 8.61758 66.48 8.75948L58.9088 24.6486C58.7625 24.9567 58.9589 25.2608 59.3226 25.2608H61.4423C61.8311 25.2608 62.0526 25.0256 62.1488 24.7905L63.3403 22.2403H70.6189L71.8104 24.7905C71.9819 25.1229 72.1533 25.2608 72.5169 25.2608H74.6366C75.0003 25.2608 75.1968 24.9527 75.0505 24.6486L67.5503 8.75948ZM64.5318 19.6212L66.919 14.4275H66.9943L69.4274 19.6212H64.536H64.5318Z" fill="#232322"/><path d="M85.565 8.73511H74.9251C74.6576 8.73511 74.461 8.94594 74.461 9.18514V11.1191C74.461 11.3542 74.6576 11.5691 74.9251 11.5691H78.6501V24.8147C78.6501 25.0499 78.8675 25.2648 79.1141 25.2648H81.3801C81.6226 25.2648 81.8442 25.054 81.8442 24.8147V11.5691H85.5692C85.8368 11.5691 86.0332 11.3583 86.0332 11.1191V9.18514C86.0332 8.94999 85.8368 8.73511 85.5692 8.73511H85.565Z" fill="#232322"/><path d="M102.388 8.73511H100.147C99.8798 8.73511 99.6833 8.94594 99.6833 9.18514V15.441H91.7483V9.18514C91.7483 8.94999 91.5519 8.73511 91.2842 8.73511H89.0183C88.7759 8.73511 88.5542 8.94594 88.5542 9.18514V24.8147C88.5542 25.0499 88.7716 25.2648 89.0183 25.2648H91.2842C91.5519 25.2648 91.7483 25.054 91.7483 24.8147V18.2994H99.6833V24.8147C99.6833 25.0499 99.8798 25.2648 100.147 25.2648H102.388C102.631 25.2648 102.852 25.054 102.852 24.8147V9.18514C102.852 8.94999 102.635 8.73511 102.388 8.73511Z" fill="#232322"/><path d="M114.876 8.5C110.005 8.5 106.134 12.303 106.134 17.0223C106.134 21.7416 110.005 25.5 114.876 25.5C119.747 25.5 123.639 21.7457 123.639 17.0223C123.639 12.2989 119.747 8.5 114.876 8.5ZM117.702 21.6767L115.344 16.5804C115.273 16.4385 115.173 16.3209 114.93 16.3209H114.688C114.471 16.3209 114.345 16.4385 114.274 16.5804L112.021 21.6524C110.398 20.7037 109.307 18.9846 109.307 17.0223C109.307 14.0464 111.816 11.5692 114.88 11.5692C117.945 11.5692 120.478 14.0464 120.478 17.0223C120.478 19.0008 119.358 20.732 117.702 21.6767Z" fill="#232322"/><path d="M144.672 24.7216L141.8 8.85273C141.775 8.66217 141.628 8.5 141.361 8.5H140.972C140.755 8.5 140.629 8.59325 140.558 8.73515L135.203 19.8806H135.132L129.772 8.73515C129.701 8.59325 129.554 8.5 129.358 8.5H128.969C128.702 8.5 128.555 8.66623 128.53 8.85273L125.633 24.7175C125.583 25.0499 125.779 25.2608 126.097 25.2608H128.288C128.505 25.2608 128.702 25.0702 128.727 24.9081L130.14 15.9601H130.211L134.521 25.2405C134.596 25.3824 134.718 25.5 134.935 25.5H135.374C135.592 25.5 135.738 25.3824 135.788 25.2405L140.048 15.9601H140.119L141.557 24.9081C141.608 25.0743 141.8 25.2608 142.021 25.2608H144.237C144.555 25.2608 144.747 25.0499 144.676 24.7175L144.672 24.7216Z" fill="#232322"/></svg>
-    </a>
-    <time class="timestamp" id="utc-clock" datetime="">0000-00-00 00:00:00Z</time>
-  </header>
-
-  <div class="rule rule-top" aria-hidden="true"></div>
-
-  <main class="content">
-    <div class="column">
-      <h1 class="page-title">TERMS OF SERVICE</h1>
-      <p class="updated">Last updated: July 8, 2026</p>
-      <div class="prose">
-
-        <h2 class="section-title">1. ACCEPTANCE OF THESE TERMS</h2>
-        <p>These Terms of Service (the "Terms") are a binding agreement between you and Fathom Signal, a United States company operating as FATHOM ("FATHOM," "we," "us," "our"). They govern your access to and use of the website at fathomsignal.com, the FATHOM application, and related services (collectively, the "Services"). By accessing or using the Services, you agree to these Terms and to our <a href="/privacy.html">Privacy Notice</a>. If you do not agree, do not use the Services.</p>
-        <p>Access to the application is provided through a program run with a client organization (a "Program"). Your enrollment, participation schedule, and any Program-specific terms come from that Program. Where these Terms and a Program agreement differ, the Program agreement governs for that Program.</p>
-
-        <h2 class="section-title">2. ELIGIBILITY AND YOUR ACCOUNT</h2>
-        <p>You must be at least 18 years old and enrolled in a Program to use the application. Login links are sent only to the email address under which you are enrolled; access to that email is your credential. You are responsible for keeping that email secure and for all activity submitted from your account. Notify us promptly at <a href="mailto:team@fathomsignal.com">team@fathomsignal.com</a> if you believe your access has been compromised.</p>
-
-        <h2 class="section-title">3. ACCEPTABLE USE</h2>
-        <p>You agree that you will not:</p>
-        <ul>
-          <li>Submit anything other than your own honest observations. Fabricated claims are auditable and are filtered by validation.</li>
-          <li>Attempt to identify the author of any response, defeat or probe the platform's identity protections, or re-identify any individual from any output.</li>
-          <li>Probe, scan, disrupt, or test the vulnerability of the Services, or attempt to access data or accounts not intended for you.</li>
-          <li>Use any automated means to access the Services, or copy, scrape, or harvest content or data from them.</li>
-          <li>Reverse engineer, decompile, or disassemble any part of the Services, except where that restriction is prohibited by law.</li>
-          <li>Submit content you have a legal duty not to disclose, or content that infringes any third party's rights.</li>
-          <li>Use the Services in violation of any applicable law or regulation.</li>
-        </ul>
-        <p>We may suspend or terminate access that violates these Terms, and will work with the Program's administrator before doing so where practical.</p>
-
-        <h2 class="section-title">4. YOUR CONTENT</h2>
-        <p>You retain ownership of what you write. You grant us a worldwide, non-exclusive, royalty-free license to host, store, process, validate, transcribe, and synthesize your submissions into reports and to operate, protect, and improve the Services, in each case as described in our <a href="/privacy.html">Privacy Notice</a>. This license exists only to run the service; it does not permit us to sell your content, use it for advertising, or use it to train AI models. You represent that you have the rights necessary to submit what you submit.</p>
-
-        <h2 class="section-title">5. OUR INTELLECTUAL PROPERTY</h2>
-        <p>The Services, including all software, design, text, marks, and the structure and presentation of synthesized reports, are the property of Fathom Signal or its licensors and are protected by intellectual property law. We grant you a limited, non-exclusive, non-transferable, revocable license to use the Services as permitted by these Terms and your Program. No other rights are granted. The FATHOM name and mark may not be used without our prior written consent. Synthesized reports are provided to client organizations and participants for their internal use and may not be resold or published.</p>
-
-        <h2 class="section-title">6. FEEDBACK TO US</h2>
-        <p>If you send us suggestions or feedback about the Services, we may use them without restriction or obligation to you. This section concerns feedback about our product; it has nothing to do with the observations you submit through the platform, which are governed by Section 4 and the Privacy Notice.</p>
-
-        <h2 class="section-title">7. THIRD-PARTY SERVICES</h2>
-        <p>The Services rely on third-party infrastructure providers, listed in our <a href="/privacy.html">Privacy Notice</a>. The Services may also contain links to third-party sites. We are not responsible for third-party sites or services, and your use of them is governed by their own terms.</p>
-
-        <h2 class="section-title">8. DISCLAIMERS</h2>
-        <p>Reports are AI-generated synthesis of human observations, labeled as such, and are directional inputs to human judgment. They render no verdicts and recommend no outcomes. We do not warrant that any report is complete, accurate, or suitable for any particular decision.</p>
-        <p>THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT, TO THE FULLEST EXTENT PERMITTED BY LAW. WE DO NOT WARRANT THAT THE SERVICES WILL BE UNINTERRUPTED, SECURE, OR ERROR-FREE.</p>
-
-        <h2 class="section-title">9. LIMITATION OF LIABILITY</h2>
-        <p>TO THE FULLEST EXTENT PERMITTED BY LAW: (A) FATHOM SIGNAL AND ITS OFFICERS, EMPLOYEES, AND AGENTS WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR FOR ANY LOSS OF PROFITS, DATA, GOODWILL, OR OPPORTUNITY, ARISING OUT OF OR RELATING TO THE SERVICES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES; AND (B) OUR TOTAL LIABILITY FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THE SERVICES IS LIMITED TO ONE HUNDRED UNITED STATES DOLLARS (US $100) OR THE AMOUNT PAID BY YOU TO US FOR THE SERVICES IN THE TWELVE MONTHS PRECEDING THE CLAIM, WHICHEVER IS GREATER. SOME JURISDICTIONS DO NOT ALLOW CERTAIN LIMITATIONS, SO SOME OF THESE LIMITATIONS MAY NOT APPLY TO YOU.</p>
-
-        <h2 class="section-title">10. INDEMNIFICATION</h2>
-        <p>You agree to indemnify and hold harmless Fathom Signal and its officers, employees, and agents from and against claims, damages, and expenses (including reasonable attorneys' fees) arising out of your violation of these Terms or your misuse of the Services, except to the extent caused by our own breach of these Terms.</p>
-
-        <h2 class="section-title">11. DISPUTE RESOLUTION AND ARBITRATION</h2>
-        <p><strong>Please read this section carefully. It affects your legal rights.</strong></p>
-        <p><strong>Informal resolution first.</strong> Before filing any claim, you agree to write to us at <a href="mailto:team@fathomsignal.com">team@fathomsignal.com</a> describing the dispute, and to give us 30 days to resolve it with you informally.</p>
-        <p><strong>Binding arbitration.</strong> Any dispute arising out of or relating to these Terms or the Services that is not resolved informally will be resolved by binding arbitration administered by the American Arbitration Association under its Consumer Arbitration Rules, rather than in court. The arbitration will be conducted in English, by a single arbitrator, and may proceed remotely. Judgment on the award may be entered in any court of competent jurisdiction. Either party may instead bring an individual claim in small claims court, and either party may seek injunctive relief in court for infringement or misuse of intellectual property or for unauthorized access to the Services.</p>
-        <p><strong>Class action waiver.</strong> Disputes will be resolved on an individual basis only. NEITHER PARTY MAY PARTICIPATE IN A CLASS ACTION, CLASS-WIDE ARBITRATION, OR REPRESENTATIVE PROCEEDING AGAINST THE OTHER. If this waiver is found unenforceable as to a particular claim, that claim, and only that claim, will proceed in court.</p>
-        <p><strong>Opt out.</strong> You may opt out of this arbitration agreement by emailing <a href="mailto:team@fathomsignal.com">team@fathomsignal.com</a> within 30 days of first accepting these Terms, stating your name, enrolled email address, and intent to opt out. Opting out does not affect any other section of these Terms.</p>
-
-        <h2 class="section-title">12. GOVERNING LAW</h2>
-        <p>These Terms and any dispute arising out of them are governed by the Federal Arbitration Act as to Section 11, and otherwise by the laws of the State of Delaware, without regard to conflict-of-law rules. Where a claim proceeds in court under these Terms, it will be brought exclusively in the state or federal courts located in Delaware, and both parties consent to their jurisdiction.</p>
-
-        <h2 class="section-title">13. TERMINATION</h2>
-        <p>You may stop using the Services at any time; participation questions belong to your Program. We may suspend or terminate your access as described in Section 3, if your Program ends, or if we discontinue the Services. Upon termination, the licenses granted to you end, and the data-handling commitments in the <a href="/privacy.html">Privacy Notice</a>, including its retention and deletion schedule, continue to apply. Sections 4 through 12 and 14 through 15 survive termination.</p>
-
-        <h2 class="section-title">14. CHANGES TO THE SERVICES AND THESE TERMS</h2>
-        <p>The Services will change as we build. We may modify or discontinue features, and we may update these Terms. When we do, we will update the date at the top, and for material changes affecting active participants we will provide notice in the application before the change takes effect. Continued use of the Services after a change takes effect constitutes acceptance of the revised Terms.</p>
-
-        <h2 class="section-title">15. GENERAL</h2>
-        <ul>
-          <li><strong>Export and sanctions compliance.</strong> You may not use the Services in violation of United States export control or sanctions laws, and you represent that you are not located in an embargoed jurisdiction or on any U.S. government restricted-party list.</li>
-          <li><strong>Entire agreement.</strong> These Terms, the Privacy Notice, and any applicable Program agreement are the entire agreement between you and us regarding the Services.</li>
-          <li><strong>Severability.</strong> If any provision of these Terms is found unenforceable, it will be limited to the minimum extent necessary and the remainder will remain in effect.</li>
-          <li><strong>No waiver.</strong> Our failure to enforce a provision is not a waiver of our right to do so later.</li>
-          <li><strong>Assignment.</strong> You may not assign these Terms. We may assign them in connection with a merger, acquisition, or sale of assets, in which case these Terms and the Privacy Notice's commitments bind the successor.</li>
-          <li><strong>Notices.</strong> We may provide notices through the application or to your enrolled email address. Notices to us go to <a href="mailto:team@fathomsignal.com">team@fathomsignal.com</a>.</li>
-        </ul>
-
-        <h2 class="section-title">16. CONTACT</h2>
-        <p>Fathom Signal &middot; <a href="mailto:team@fathomsignal.com">team@fathomsignal.com</a></p>
-
-      </div>
-    </div>
-  </main>
-
-  <div class="rule rule-bottom" aria-hidden="true"></div>
-
-  <footer class="footer">
-    <a class="footer-mission" href="/mission.html">MISSION &rarr;</a>
-    <span class="footer-text">&copy; 2026 Fathom Signal</span>
-    <span class="footer-text"><a href="mailto:team@fathomsignal.com">TEAM@FATHOMSIGNAL.COM</a></span>
-    <nav class="footer-text footer-nav" aria-label="Site">
-      <a href="/privacy.html">PRIVACY</a> &middot; <a href="/terms.html" aria-current="page">TERMS</a>
-    </nav>
-  </footer>
-
-<script>
-  (function () {
-    var el = document.getElementById('utc-clock');
-    if (!el) return;
-    function pad(n) { return n < 10 ? '0' + n : '' + n; }
-    function tick() {
-      var d = new Date();
-      var s = d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()) + ' ' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds()) + 'Z';
-      el.textContent = s;
-      el.setAttribute('datetime', d.toISOString());
-    }
-    tick();
-    setInterval(tick, 1000);
-  })();
-</script>
-
+<div class="site">
+<header class="site-bar">
+<a class="home" href="/" aria-label="Fathom home"><svg class="lockup" viewBox="0 0 124.6 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fathom"><g class="turn"><g transform="translate(-2.9268 -2.9268) scale(0.292683)"><path d="M50.951 10C28.1352 10 10 28.3439 10 51.1076C10 73.8712 28.1352 92 50.951 92C73.7669 92 92 73.8908 92 51.1076C92 28.3244 73.7473 10 50.951 10ZM64.1705 73.5583L53.1249 48.9759C52.792 48.2914 52.3219 47.7243 51.1861 47.7243H50.0502C49.0318 47.7243 48.4442 48.2914 48.1113 48.9759L37.5553 73.441C29.9565 68.8648 24.845 60.5729 24.845 51.1076C24.845 36.7532 36.5957 24.8042 50.951 24.8042C65.3064 24.8042 77.1746 36.7532 77.1746 51.1076C77.1746 60.6511 71.926 69.0017 64.1705 73.5583Z" fill="#181611"></path></g></g><g transform="translate(33.6 4)"><path d="M9.76223 0.221329H0.436762C0.184935 0.221329 0 0.423571 0 0.644892V15.3551C0 15.5764 0.184935 15.7787 0.436762 15.7787H2.54581C2.77403 15.7787 2.98257 15.5803 2.98257 15.3551V9.73433H8.64081C8.86903 9.73433 9.07757 9.5359 9.07757 9.31076V7.49059C9.07757 7.26927 8.87296 7.06702 8.64081 7.06702H2.97864V2.88863H9.76223C10.0141 2.88863 10.199 2.69021 10.199 2.46507V0.644892C10.199 0.423571 10.0141 0.221329 9.76223 0.221329Z" fill="#181611"></path><path d="M18.3991 0.244217C18.3283 0.110661 18.2378 0 18.0095 0H17.7813C17.5767 0 17.4587 0.110661 17.3918 0.244217L10.2659 15.1987C10.1282 15.4887 10.3131 15.7749 10.6554 15.7749H12.6504C13.0163 15.7749 13.2248 15.5535 13.3153 15.3322L14.4368 12.932H21.2872L22.4086 15.3322C22.57 15.6451 22.7313 15.7749 23.0736 15.7749H25.0686C25.4109 15.7749 25.5958 15.4849 25.4581 15.1987L18.3991 0.244217ZM15.5582 10.467L17.8049 5.57882H17.8758L20.1658 10.467H15.5621H15.5582Z" fill="#181611"></path><path d="M35.3541 0.221329H25.3401C25.0883 0.221329 24.9033 0.419755 24.9033 0.644892V2.46507C24.9033 2.68639 25.0883 2.88863 25.3401 2.88863H28.846V15.3551C28.846 15.5764 29.0506 15.7787 29.2827 15.7787H31.4154C31.6436 15.7787 31.8522 15.5803 31.8522 15.3551V2.88863H35.3581C35.6099 2.88863 35.7948 2.69021 35.7948 2.46507V0.644892C35.7948 0.423571 35.6099 0.221329 35.3581 0.221329H35.3541Z" fill="#181611"></path><path d="M51.1877 0.221329H49.0787C48.8269 0.221329 48.6419 0.419755 48.6419 0.644892V6.5328H41.1737V0.644892C41.1737 0.423571 40.9888 0.221329 40.7369 0.221329H38.6043C38.3761 0.221329 38.1675 0.419755 38.1675 0.644892V15.3551C38.1675 15.5764 38.3721 15.7787 38.6043 15.7787H40.7369C40.9888 15.7787 41.1737 15.5803 41.1737 15.3551V9.223H48.6419V15.3551C48.6419 15.5764 48.8269 15.7787 49.0787 15.7787H51.1877C51.416 15.7787 51.6245 15.5803 51.6245 15.3551V0.644892C51.6245 0.423571 51.4199 0.221329 51.1877 0.221329Z" fill="#181611"></path><path fill-rule="evenodd" d="M62.941 0C58.3569 0 54.7133 3.5793 54.7133 8.02099C54.7133 12.4627 58.3569 16 62.941 16C67.525 16 71.1883 12.4665 71.1883 8.02099C71.1883 3.57548 67.525 0 62.941 0ZM57.7 8.02A5.257 5.131 0 1 0 68.214 8.02A5.257 5.131 0 1 0 57.7 8.02Z" fill="#181611"></path><path d="M90.9842 15.2674L88.281 0.331982C88.2574 0.152635 88.1197 0 87.8679 0H87.502C87.2973 0 87.1793 0.0877653 87.1124 0.221321L82.0719 10.7112H82.005L76.9606 0.221321C76.8937 0.0877653 76.756 0 76.5711 0H76.2052C75.9533 0 75.8156 0.156451 75.792 0.331982L73.0652 15.2635C73.018 15.5764 73.2029 15.7749 73.502 15.7749H75.5638C75.7684 15.7749 75.9533 15.5955 75.9769 15.4429L77.3069 7.02123H77.3738L81.4306 15.7558C81.5014 15.8893 81.6155 16 81.8201 16H82.2333C82.4379 16 82.5756 15.8893 82.6228 15.7558L86.6324 7.02123H86.6993L88.0528 15.4429C88.1 15.5993 88.281 15.7749 88.4896 15.7749H90.575C90.8741 15.7749 91.0551 15.5764 90.9882 15.2635L90.9842 15.2674Z" fill="#181611"></path></g></svg></a>
+<nav class="site-nav" aria-label="Site"><a href="/mission.html">Mission</a><a href="/how-it-works.html">How it works</a><a href="https://canvas.fathomsignal.com/apply">Apply</a><a href="https://canvas.fathomsignal.com/connect">Connect</a></nav>
+</header>
+<main class="site-main">
+<div class="col legal">
+<h1 class="pt">Terms of Service</h1>
+<p class="kicker" style="margin-bottom:40px;">Last updated: October 29, 2026</p>
+<h2 class="sh">1. Agreement</h2>
+<p class="b">These Terms are an agreement between you and Fathom Signal, a Delaware corporation operating as Fathom ("Fathom", "we", "us"). They govern fathomsignal.com and the Fathom app (the "Service"). By using the Service you accept these Terms and our Privacy Notice. If you do not accept them, do not use the Service.</p>
+<h2 class="sh">2. Eligibility and access</h2>
+<p class="b">You must be at least 18, and you confirm this when you first connect. You connect with a one-time code sent to your email address, so control of that inbox is your credential; keep it secure and tell us at <a class="in" href="mailto:team@fathomsignal.com">team@fathomsignal.com</a> if it is compromised. An account exists only while you belong to at least one team, except for outside recipients, who can only open reports addressed to them. When your last team ends, or you leave it, your account ends and you may apply again. A new team starts through an application. Applications are reviewed by Fathom, and we may decline any application.</p>
+<h2 class="sh">3. Independence</h2>
+<p class="b">Fathom is independent. No employer, agency or other organization where Fathom is used controls it, authorizes it or receives data from it, and nothing in these Terms makes Fathom anyone's agent. Your obligations to others, such as an employer's confidentiality rules, still apply to you when you use the Service.</p>
+<h2 class="sh">4. How teams work</h2>
+<p class="b">Each team governs itself. Topics go live, members are added or removed, and teams are renamed or dissolved by the team's own vote, under the rules shown in the app. You may leave a team yourself at any time. Fathom does not decide these outcomes. Dissolving a team deletes everything in it. A person turned down or removed can be proposed again after 30 days. Fathom may suspend or end access only as described in Section 10.</p>
+<h2 class="sh">5. Your conduct</h2>
+<p class="b">You agree that you will not:</p>
+<ul>
+<li>try to identify who wrote, proposed, answered or voted on anything, or to defeat the Service's anonymity;</li>
+<li>submit what you know to be false, or attack, harass or threaten anyone;</li>
+<li>share information you have a legal duty to keep confidential, or content that infringes someone else's rights;</li>
+<li>probe, scan, overload or attempt unauthorized access to the Service, or access it by automated means;</li>
+<li>reverse engineer the Service, except where the law permits it; or</li>
+<li>use the Service in violation of law.</li>
+</ul>
+<h2 class="sh">6. Your content</h2>
+<p class="b">You own what you write and say. You give Fathom a worldwide, non-exclusive, royalty-free license to store, transmit, transcribe, filter, combine and display your content, only to run the Service as described in the Privacy Notice. Answers are combined into a synthesis and then deleted, and reports and comments expire, so we cannot return or edit your content later. An answer cannot be changed once sent, and a topic cannot be withdrawn once posted. You confirm you have the right to submit what you submit.</p>
+<h2 class="sh">7. AI filtering and reports</h2>
+<p class="b">AI filters, run on Google Cloud as described in the Privacy Notice, read topics, comments and answers before they are shared, and may suggest a revision. You decide what to send. The filters decide what reaches a report: content they judge malicious or harmful is held back. Filters make mistakes in both directions, and a report may be incomplete or wrong. Reports are AI-written summaries of what members said. They are a starting point for conversation, and you should not rely on them as statements of fact or as the basis for decisions about any person. Anonymity protects your name and the source of what you say. It cannot protect a detail only you would know, so be mindful of what your words reveal.</p>
+<h2 class="sh">8. Reputation score</h2>
+<p class="b">Each person has one reputation score across all teams, visible to the members of each team they belong to. The score reflects participation in the Service under published rules we set and may change, and carries no record of which contributions moved it once they close. It is a feature of the Service, carries no judgment of you as a person, and has no value outside the Service.</p>
+<h2 class="sh">9. Our property</h2>
+<p class="b">The Service, its software, design and the Fathom name and mark belong to Fathom Signal or its licensors. We grant you a limited, revocable, non-transferable license to use the Service under these Terms. Recipients may copy a report's text for their own use. If you send us feedback about the Service, we may use it freely.</p>
+<h2 class="sh">10. Suspension and termination</h2>
+<p class="b">You may stop using the Service at any time, leave any team in the app, or ask us to delete your account by emailing <a class="in" href="mailto:team@fathomsignal.com">team@fathomsignal.com</a>. Fathom does not judge what members say: the filters and each team do. We may suspend or end an account only where the law requires it, or where the account is used to attack, overload or defeat the security of the Service. We may discontinue the Service with notice. On termination your licenses end, and the deletion commitments in the Privacy Notice continue to apply. Sections 6, 7 and 9 through 15 survive.</p>
+<h2 class="sh">11. Disclaimers</h2>
+<p class="b">THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTIES OF ANY KIND, EXPRESS, IMPLIED OR STATUTORY, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT, TO THE FULLEST EXTENT THE LAW PERMITS. WE DO NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED OR ERROR-FREE, OR THAT ANY FILTER OR REPORT WILL BE ACCURATE.</p>
+<h2 class="sh">12. Limitation of liability</h2>
+<p class="b">TO THE FULLEST EXTENT THE LAW PERMITS: (A) FATHOM SIGNAL AND ITS OFFICERS, EMPLOYEES AND AGENTS WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY OR PUNITIVE DAMAGES, OR FOR LOSS OF PROFITS, DATA, GOODWILL OR OPPORTUNITY, ARISING FROM THE SERVICE; AND (B) OUR TOTAL LIABILITY FOR ALL CLAIMS RELATING TO THE SERVICE IS LIMITED TO THE GREATER OF US $100 OR THE AMOUNT YOU PAID US IN THE 12 MONTHS BEFORE THE CLAIM. SOME JURISDICTIONS DO NOT ALLOW THESE LIMITS, SO THEY MAY NOT APPLY TO YOU.</p>
+<p class="b">You will indemnify Fathom Signal and its officers, employees and agents against claims and expenses, including reasonable attorneys' fees, arising from your breach of these Terms, except to the extent caused by our own breach.</p>
+<h2 class="sh">13. Disputes and arbitration</h2>
+<p class="b">Please read this section carefully. It affects your legal rights.</p>
+<p class="b"><strong>Informal resolution.</strong> Before filing a claim, write to <a class="in" href="mailto:team@fathomsignal.com">team@fathomsignal.com</a> describing the dispute and give us 30 days to resolve it.</p>
+<p class="b"><strong>Arbitration.</strong> Any unresolved dispute arising from these Terms or the Service will be settled by binding individual arbitration administered by the American Arbitration Association under its Consumer Arbitration Rules, before one arbitrator, in English, and remotely where possible. Judgment on the award may be entered in any court with jurisdiction. Either party may bring an individual claim in small claims court, or seek an injunction in court for misuse of intellectual property or unauthorized access to the Service.</p>
+<p class="b"><strong>Class action waiver.</strong> Disputes will be resolved only individually. NEITHER PARTY MAY BRING OR TAKE PART IN A CLASS ACTION, CLASS ARBITRATION OR REPRESENTATIVE PROCEEDING AGAINST THE OTHER. If this waiver is unenforceable for a claim, that claim alone proceeds in court.</p>
+<p class="b"><strong>Opt out.</strong> You may opt out of this Section 13 by emailing <a class="in" href="mailto:team@fathomsignal.com">team@fathomsignal.com</a> within 30 days of first accepting these Terms, giving your email address and your intent to opt out. Opting out affects nothing else in these Terms.</p>
+<h2 class="sh">14. Governing law</h2>
+<p class="b">The Federal Arbitration Act governs Section 13. Otherwise these Terms are governed by Delaware law, without regard to conflict-of-law rules. Any claim that proceeds in court will be brought only in the state or federal courts located in Delaware, and both parties consent to their jurisdiction.</p>
+<h2 class="sh">15. General</h2>
+<p class="b">We may change the Service or these Terms. We will post changes here and update the date above, and for material changes we will notify members in the app or by email before they take effect. Continuing to use the Service after a change takes effect means you accept it. You may not use the Service in violation of U.S. export or sanctions laws. These Terms and the Privacy Notice are the entire agreement between you and us about the Service. If a provision is unenforceable, it is limited to the minimum extent necessary and the rest remains in effect. Our failure to enforce a provision does not waive it. You may not assign these Terms; we may assign them to a successor in a merger or sale, who will be bound by them and by the Privacy Notice. We send notices in the app or by email, and notices to us go to <a class="in" href="mailto:team@fathomsignal.com">team@fathomsignal.com</a>.</p>
+<h2 class="sh">16. Contact</h2>
+<p class="b">Fathom Signal, <a class="in" href="mailto:team@fathomsignal.com">team@fathomsignal.com</a></p>
+</div>
+</main>
+<footer class="site-foot"><span>© 2026 Fathom Signal</span><a href="mailto:team@fathomsignal.com">team@fathomsignal.com</a><a href="/privacy.html">Privacy</a><a href="/terms.html" aria-current="page" style="color:var(--ink)">Terms</a></footer>
+</div>
 </body>
 </html>

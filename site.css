@@ -1,0 +1,84 @@
+/* Fathom website. Fathom Brand 3.0 (2026-10-29), built from the Fathom Website Revs design canvas.
+   Tokens and keys from the Team Canvas design system; the shell is shared with the app's signed-out pages. */
+:root{--paper:#faf8f4;--ink:#181611;--ink-2:#312e29;--ink-3:#4d4a44;--muted:#8f8c86;--rule:#b5b2ab;--rule-light:#d4d1ca;--rule-faint:#e9e5de;--rule-quiet:#e2dfd9;--marine:#055c83;--marine-wash:#c2d9e6;--oxide:#b64536;--verdigris:#11794c;--say:'Literata',Georgia,'Times New Roman',serif;--mono:'IBM Plex Mono',Consolas,'Courier New',monospace}
+html,body{margin:0;background:var(--paper)}
+.k{height:48px;box-sizing:border-box;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;font:400 12.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:0;cursor:pointer}
+.k.p{background:var(--ink);color:var(--paper);flex:1}
+.k.w{flex:1}
+.k.d{border-color:var(--rule-quiet);background:var(--rule-quiet);color:var(--muted)}
+.k.sm{height:32px;font-size:11px;padding:0 10px}
+.k{text-decoration:none;white-space:nowrap}
+.col{flex:1;min-width:0;display:flex;flex-direction:column}
+/* Shell. Fathom public pages: the website and the app's signed-out pages share this shell.
+   Fathom Brand 3.0 (2026-10-29): Literata for what Fathom says, IBM Plex Mono for labels, navigation and keys.
+   The lockup heads every page but Home; the mark inside it turns once every 20 seconds. */
+@keyframes mark-turn{0%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.45,0,.55,1)}45%,100%{transform:rotate(360deg)}}
+.turn{transform-box:view-box;transform-origin:12px 12px;animation:mark-turn 20s 3s infinite}
+.turn-self{transform-origin:50% 50%;animation:mark-turn 20s 3s infinite}
+@media (prefers-reduced-motion:reduce){.turn,.turn-self{animation:none}}
+
+.site{min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);font-family:var(--say);-webkit-font-smoothing:antialiased}
+.site *{box-sizing:border-box}
+
+/* Header: the lockup at a 16px cap, the site's four destinations at the right. */
+.site-bar{min-height:64px;flex:none;border-bottom:1px solid var(--ink);display:flex;align-items:center;justify-content:space-between;gap:12px 32px;padding:0 40px;flex-wrap:wrap}
+.site-bar .home{display:block;line-height:0;padding:20px 0}
+.site-bar svg.lockup{height:24px;width:auto;display:block}
+.site-bar svg.plain{height:16px;width:auto;display:block}
+.site-nav{display:flex;gap:4px 28px;flex-wrap:wrap;align-items:center}
+.site-nav a{font:400 11px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);text-decoration:none;padding:12px 0}
+.site-nav a:hover{color:var(--ink)}
+.site-nav a.on{color:var(--ink);text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px}
+.site-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px;font:400 11px/1.5 var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.site-meta span+span{letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+/* A reading column. */
+.site-main{flex:1;display:flex;justify-content:center;padding:80px 24px 96px}
+.site-main.center{align-items:center;padding:48px 24px}
+.col{width:100%;max-width:680px}
+.kicker{margin:0 0 12px;font:400 11px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.pt{margin:0 0 32px;font:500 44px/1.12 var(--say);letter-spacing:-.01em;color:var(--ink)}
+.lead{margin:0 0 24px;font:400 22px/1.45 var(--say);color:var(--ink)}
+.b{margin:0 0 16px;font:400 17px/1.6 var(--say);color:var(--ink-2)}
+.b strong,.pts strong{font-weight:500;color:var(--ink)}
+.sh{margin:0 0 20px;font:500 28px/1.2 var(--say);color:var(--ink)}
+.ss{margin:40px 0 12px;font:400 11px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.rl{height:1px;background:var(--rule-light);margin:64px 0}
+.site a.in{color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.site a.in:hover{color:var(--ink-3)}
+ul.pts{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule-light)}
+ul.pts li{padding:14px 0;border-bottom:1px solid var(--rule-light);font:400 17px/1.55 var(--say);color:var(--ink-2)}
+.caveat{margin-top:56px;padding:28px 32px;border:1px solid var(--rule-light);border-radius:6px}
+.caveat .ss{margin-top:0}
+.next{display:flex;justify-content:flex-end;margin-top:64px;padding-top:20px;border-top:1px solid var(--ink)}
+.next a{font:400 11px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;padding:12px 0}
+.next a:hover{text-decoration:underline;text-underline-offset:6px}
+
+/* Footer: mono, quiet, one row that wraps. */
+.site-foot{flex:none;border-top:1px solid var(--rule-light);padding:20px 40px 24px;display:flex;flex-wrap:wrap;gap:4px 28px;justify-content:center;align-items:center;font:400 11px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.site-foot a{color:var(--ink-3);text-decoration:none;display:inline-block;padding:12px 0}
+.site-foot a:hover{color:var(--ink)}
+
+@media (max-width:640px){
+  .site-bar{padding:0 20px}
+  .site-nav{gap:0 20px}
+  .site-main{padding:48px 20px 64px}
+  .pt{font-size:34px}
+  .lead{font-size:19px}
+  .b,ul.pts li{font-size:16px}
+  .sh{font-size:24px}
+  .rl{margin:48px 0}
+  .caveat{padding:20px}
+  .site-foot{padding:16px 20px 20px;gap:0 20px}
+}
+
+/* Legal pages: the same column, numbered sections, plain tables. */
+.legal .sh{font-size:22px;margin:56px 0 16px}
+.legal ul{margin:0 0 16px;padding:0 0 0 20px;list-style:square}
+.legal ul li{margin:0 0 10px;font:400 17px/1.6 var(--say);color:var(--ink-2)}
+.legal ul li::marker{color:var(--rule)}
+.legal table{width:100%;border-collapse:collapse;margin:8px 0 24px}
+.legal th{text-align:left;font:400 11px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);padding:12px 16px 10px 0;border-bottom:1px solid var(--ink)}
+.legal td{font:400 15px/1.5 var(--say);color:var(--ink-2);padding:12px 16px 12px 0;border-bottom:1px solid var(--rule-light);vertical-align:top}
+.legal td:first-child{color:var(--ink);font-weight:500}
+@media (max-width:640px){.legal ul li{font-size:16px}.legal td{font-size:14px}}

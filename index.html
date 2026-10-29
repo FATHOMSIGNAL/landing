@@ -1,935 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FATHOM</title>
-<meta name="description" content="A precision instrument.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fathom</title>
+<meta name="description" content="Fathom exists to increase the truth shared in love.">
 <link rel="canonical" href="https://www.fathomsignal.com/">
-<meta property="og:title" content="FATHOM">
-<meta property="og:description" content="A precision instrument.">
+<meta property="og:title" content="Fathom">
+<meta property="og:description" content="Fathom exists to increase the truth shared in love.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.fathomsignal.com/">
 <meta property="og:image" content="https://www.fathomsignal.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:site_name" content="FATHOM">
+<meta property="og:site_name" content="Fathom">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.fathomsignal.com/og-image.png">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath fill='%23232322' d='M39.96 7.84C22.07 7.84 7.84 22.23 7.84 40.08c0 17.86 14.23 32.07 32.12 32.07s32.2-14.2 32.2-32.07c0-17.87-14.31-32.24-32.2-32.24zm10.37 49.85L41.67 38.41c-0.26-0.54-0.63-0.98-1.52-0.98h-0.89c-0.8 0-1.26 0.44-1.52 0.98L29.46 57.6c-5.96-3.59-9.97-10.09-9.97-17.52 0-11.26 9.22-20.63 20.48-20.63s20.57 9.37 20.57 20.63c0 7.48-4.12 14.03-10.2 17.61z'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    /* Brand tokens from DOC-DS-001 v1.1 */
-    --ink-900: #181818;
-    --ink-800: #232322;
-    --ink-700: #2E2E2D;
-    --ink-600: #4A4A47;
-    --ink-500: #6F6E6B;
-    --ink-400: #8E8C88;
-    --ink-300: #B5B2AC;
-    --ink-200: #D4D0C9;
-    --ink-100: #E8E5DF;
-    --paper-100: #FFFFFE;
-    --paper-200: #FAF8F4;
-    --paper-300: #F4F2EE;
-    --paper-400: #ECE8E1;
-    --marine-500: #2C5F7C;
-    --marine-400: #3D7593;
-
-    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-
-    --space-3: 12px;
-    --space-4: 16px;
-    --space-5: 24px;
-    --space-6: 32px;
-    --space-7: 48px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html, body {
-    background: var(--paper-300);
-    color: var(--ink-900);
-    font-family: var(--font-mono);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  body {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    min-height: 100vh;
-    min-height: 100dvh;
-    padding: var(--space-7);
-  }
-
-  @keyframes draw-in {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
-  }
-
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes mark-fade-in {
-    from { opacity: 0; transform: scale(0.96); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  /* SWEEP: continuous rotation */
-  @keyframes sweep {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  /* SOUNDING: single continuous signal cycle.
-     One line is emitted from the disc, descends smoothly to the seafloor,
-     touches at zero velocity (no overshoot), accelerates back up, and
-     decelerates as it returns to the disc. Motion is sinusoidal: slow at
-     both endpoints, fast through the middle.
-     Per-keyframe ease-in-out gives natural deceleration at both ends.
-
-     The seafloor is the bottom hairline. Its distance from the pulse's
-     origin depends on viewport height, so the travel cannot be a constant
-     here: --pulse-travel is measured and written by the travel controller
-     at the foot of this file. The 140px fallback is the pre-2026-07-16
-     fixed value, used only if that script does not run. */
-  @keyframes pulse-cycle {
-    0% {
-      transform: translateY(0) scaleX(1);
-      opacity: 0;
-      animation-timing-function: ease-in-out;
-    }
-    8% {
-      transform: translateY(0) scaleX(1);
-      opacity: 0.7;
-      animation-timing-function: ease-in-out;
-    }
-    50% {
-      transform: translateY(var(--pulse-travel, 140px)) scaleX(1.3);
-      opacity: 0.5;
-      animation-timing-function: ease-in-out;
-    }
-    92% {
-      transform: translateY(0) scaleX(1.95);
-      opacity: 0.14;
-      animation-timing-function: linear;
-    }
-    100% {
-      transform: translateY(0) scaleX(2.0);
-      opacity: 0;
-    }
-  }
-
-  /* ===================== NOISE OVERLAY ===================== */
-
-  .noise {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 100;
-    opacity: 0.05;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    background-size: 200px 200px;
-  }
-
-  /* ===================== STARFIELD ===================== */
-
-  /* Dense fine-grain texture behind everything else.
-     Reads as surface tooth rather than discrete elements. Translates
-     slightly with mouse position (desktop) or tap (mobile) for subtle
-     parallax. */
-  .starfield {
-    position: fixed;
-    inset: -20px;  /* extra room around viewport for parallax travel */
-    pointer-events: none;
-    z-index: 0;
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-    transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .starfield.tracking {
-    /* When mouse is actively moving, snappier follow. */
-    transition: transform 200ms cubic-bezier(0.33, 1, 0.68, 1);
-  }
-
-  .star {
-    fill: var(--ink-300);
-  }
-
-  /* ===================== HEADER ===================== */
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    opacity: 0;
-    animation: fade-in 800ms ease-out 200ms forwards;
-  }
-
-  .wordmark {
-    height: 14px;
-    width: auto;
-    display: block;
-  }
-
-  .header-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 3px;
-  }
-
-  .timestamp {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-    color: var(--ink-500);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .readout {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    color: var(--ink-400);
-    font-variant-numeric: tabular-nums;
-    text-transform: uppercase;
-    opacity: 0;
-    transition: opacity 600ms ease;
-  }
-
-  .readout.live {
-    opacity: 1;
-  }
-
-  /* ===================== CENTER ===================== */
-
-  /* 24px rather than 48px: the CTA stack grew by a second button, and the
-     band between the rules has to hold mark + gap + stack. The tighter gap
-     buys back enough to fit down to a 568px-tall viewport (572px for no
-     overlap at all); below that the stack punches through the bottom rule
-     into the footer, and the only thing left to shrink is the mark. Safe to
-     tighten because the pulse now travels past the stack to the bottom rule,
-     so the buttons' position no longer interacts with where it comes to rest.
-     Measured 2026-07-16; qa/run.mjs asserts it. */
-  .center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-5);
-    position: relative;
-  }
-
-  /* Primary CTA below the mark. Solid paper background sits above the
-     sounding pulse (z-index 1) so the line passes behind it cleanly. */
-  .login-cta {
-    position: relative;
-    z-index: 3;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: var(--marine-500);
-    background: var(--paper-300);
-    border: 1px solid var(--marine-500);
-    padding: 14px 32px;
-    opacity: 0;
-    animation: fade-in 800ms ease-out 1000ms forwards;
-    transition: background 200ms ease, color 200ms ease;
-  }
-
-  .login-cta:hover {
-    background: var(--marine-500);
-    color: var(--paper-100);
-  }
-
-  /* Connect and Apply stack under the mark. Opaque across the whole stack,
-     gap included: the pulse transits this region on its way to and from the
-     bottom rule, and a transparent gap between the buttons would strobe it
-     twice per cycle. Masking here is what lets the pulse pass behind the
-     stack as one solid object. */
-  .cta-stack {
-    position: relative;
-    z-index: 3;
-    background: var(--paper-300);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-4);
-  }
-
-  /* Secondary CTA. Connect keeps the bordered box because it is the door for
-     people who already have accounts. Apply is the door for everyone else and
-     recedes to ink, so it reads without competing for the eye. Solid paper
-     background masks the sounding pulse the same way .login-cta does, since
-     the pulse travels further relative to the mark at small viewports. */
-  .apply-cta {
-    position: relative;
-    z-index: 3;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: var(--ink-500);
-    background: var(--paper-300);
-    border: 1px solid transparent;
-    padding: 14px 32px;
-    opacity: 0;
-    animation: fade-in 800ms ease-out 1150ms forwards;
-    transition: color 200ms ease;
-  }
-
-  .apply-cta:hover {
-    color: var(--ink-900);
-  }
-
-  a:focus-visible {
-    outline: 2px solid var(--marine-500);
-    outline-offset: 3px;
-    border-radius: 2px;
-  }
-
-  .mark-stage {
-    width: min(38vmin, 340px);
-    height: min(38vmin, 340px);
-    position: relative;
-    opacity: 0;
-    animation: mark-fade-in 1400ms cubic-bezier(0.16, 1, 0.3, 1) 600ms forwards;
-  }
-
-  .mark-stage > svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-    overflow: visible;
-    position: relative;
-    z-index: 2;
-  }
-
-  /* The whole mark rotates slowly so the wedge sweeps around */
-  .mark-rotating {
-    transform-origin: 50% 50%;
-    transform: rotate(0deg);
-  }
-
-  /* Phase: SWEEP — continuous rotation */
-  .mark-stage.phase-sweep .mark-rotating {
-    animation: sweep 14s linear infinite;
-  }
-
-  /* ===================== SOUNDING PULSES ===================== */
-
-  /* Pulse line descends from the disc's bottom edge into the negative
-     space below the mark. The disc spans y=7.8 to y=72.2 in the 80-unit
-     SVG viewBox, so its bottom edge sits at ~90% of the mark-stage height.
-     One line per sounding phase: descends, touches the seafloor at zero
-     velocity, accelerates back up wider and fainter as the diffused echo. */
-  .pulse-line {
-    position: absolute;
-    left: 50%;
-    top: 88%;
-    width: 56px;
-    height: 1px;
-    margin-left: -28px;
-    background: var(--marine-500);
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* A single signal per sounding phase. One line, one full bounce.
-     6s fills the 6s of movement inside the 7s SOUND phase, leaving the
-     1s of stillness the phase controller holds before the silence. */
-  .mark-stage.phase-sound .pulse-line.out-1 {
-    animation: pulse-cycle 6s linear 0s 1;
-  }
-
-  /* ===================== FOOTER ===================== */
-
-  .footer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-    opacity: 0;
-    animation: fade-in 800ms ease-out 1200ms forwards;
-  }
-
-  .footer-text {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-500);
-  }
-
-  .footer-text a {
-    color: var(--ink-500);
-    text-decoration: none;
-    transition: color 200ms ease;
-  }
-
-  .footer-text a:hover {
-    color: var(--ink-900);
-  }
-
-  /* Mission sits above the legal links in ink, as the page's one destination
-     for visitors without an account. The legal links recede below it. */
-  .footer-mission {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: var(--ink-900);
-    margin-bottom: 4px;
-    transition: color 200ms ease;
-  }
-
-  .footer-mission:hover {
-    color: var(--marine-500);
-  }
-
-  /* ===================== HAIRLINES ===================== */
-
-  .hairline {
-    position: absolute;
-    background: var(--ink-200);
-    transform-origin: left center;
-    animation: draw-in 900ms cubic-bezier(0.65, 0, 0.35, 1) 400ms forwards;
-    transform: scaleX(0);
-  }
-
-  .hairline-top {
-    top: calc(var(--space-7) + 40px);
-    left: var(--space-7);
-    right: var(--space-7);
-    height: 1px;
-  }
-
-  .hairline-bottom {
-    bottom: calc(var(--space-7) + 82px);
-    left: var(--space-7);
-    right: var(--space-7);
-    height: 1px;
-    animation-delay: 700ms;
-  }
-
-  /* ===================== RESPONSIVE ===================== */
-
-  @media (max-width: 640px) {
-    body { padding: var(--space-5); }
-    .hairline-top {
-      top: calc(var(--space-5) + 36px);
-      left: var(--space-5);
-      right: var(--space-5);
-    }
-    .hairline-bottom {
-      bottom: calc(var(--space-5) + 75px);
-      left: var(--space-5);
-      right: var(--space-5);
-    }
-    .footer-text, .footer-mission { font-size: 9px; }
-    .timestamp { font-size: 10px; }
-    .wordmark { height: 12px; }
-    .pulse-line { width: 44px; margin-left: -22px; }
-    .login-cta { font-size: 11px; padding: 12px 24px; }
-    .apply-cta { font-size: 11px; padding: 12px 24px; }
-    .cta-stack { gap: var(--space-3); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .mark-stage.phase-sweep .mark-rotating,
-    .mark-stage.phase-sound .pulse-line {
-      animation: none !important;
-    }
-    .starfield {
-      transition: none !important;
-      transform: none !important;
-    }
-    .hairline {
-      animation: none;
-      transform: scaleX(1);
-    }
-    .header, .footer, .mark-stage, .login-cta, .apply-cta {
-      animation: none;
-      opacity: 1;
-    }
-  }
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&amp;family=Literata:ital,wght@0,400;0,500;1,400&amp;display=swap">
+<link rel="stylesheet" href="/site.css">
 </head>
 <body>
-
-  <div class="noise" aria-hidden="true"></div>
-
-  <svg class="starfield" id="starfield" aria-hidden="true" preserveAspectRatio="none"></svg>
-
-  <div class="hairline hairline-top"></div>
-  <div class="hairline hairline-bottom"></div>
-
-  <header class="header">
-    <svg class="wordmark" viewBox="48 8.5 96.69 17" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FATHOM"><path d="M58.3736 8.73511H48.4653C48.1977 8.73511 48.0013 8.94999 48.0013 9.18514V24.8147C48.0013 25.0499 48.1977 25.2648 48.4653 25.2648H50.7062C50.9487 25.2648 51.1702 25.054 51.1702 24.8147V18.8427H57.1821C57.4246 18.8427 57.6462 18.6318 57.6462 18.3926V16.4587C57.6462 16.2235 57.4288 16.0087 57.1821 16.0087H51.1661V11.5691H58.3736C58.6412 11.5691 58.8377 11.3583 58.8377 11.1191V9.18514C58.8377 8.94999 58.6412 8.73511 58.3736 8.73511Z" fill="#232322"/><path d="M67.5503 8.75948C67.4751 8.61758 67.3789 8.5 67.1363 8.5H66.8939C66.6765 8.5 66.5511 8.61758 66.48 8.75948L58.9088 24.6486C58.7625 24.9567 58.9589 25.2608 59.3226 25.2608H61.4423C61.8311 25.2608 62.0526 25.0256 62.1488 24.7905L63.3403 22.2403H70.6189L71.8104 24.7905C71.9819 25.1229 72.1533 25.2608 72.5169 25.2608H74.6366C75.0003 25.2608 75.1968 24.9527 75.0505 24.6486L67.5503 8.75948ZM64.5318 19.6212L66.919 14.4275H66.9943L69.4274 19.6212H64.536H64.5318Z" fill="#232322"/><path d="M85.565 8.73511H74.9251C74.6576 8.73511 74.461 8.94594 74.461 9.18514V11.1191C74.461 11.3542 74.6576 11.5691 74.9251 11.5691H78.6501V24.8147C78.6501 25.0499 78.8675 25.2648 79.1141 25.2648H81.3801C81.6226 25.2648 81.8442 25.054 81.8442 24.8147V11.5691H85.5692C85.8368 11.5691 86.0332 11.3583 86.0332 11.1191V9.18514C86.0332 8.94999 85.8368 8.73511 85.5692 8.73511H85.565Z" fill="#232322"/><path d="M102.388 8.73511H100.147C99.8798 8.73511 99.6833 8.94594 99.6833 9.18514V15.441H91.7483V9.18514C91.7483 8.94999 91.5519 8.73511 91.2842 8.73511H89.0183C88.7759 8.73511 88.5542 8.94594 88.5542 9.18514V24.8147C88.5542 25.0499 88.7716 25.2648 89.0183 25.2648H91.2842C91.5519 25.2648 91.7483 25.054 91.7483 24.8147V18.2994H99.6833V24.8147C99.6833 25.0499 99.8798 25.2648 100.147 25.2648H102.388C102.631 25.2648 102.852 25.054 102.852 24.8147V9.18514C102.852 8.94999 102.635 8.73511 102.388 8.73511Z" fill="#232322"/><path d="M114.876 8.5C110.005 8.5 106.134 12.303 106.134 17.0223C106.134 21.7416 110.005 25.5 114.876 25.5C119.747 25.5 123.639 21.7457 123.639 17.0223C123.639 12.2989 119.747 8.5 114.876 8.5ZM117.702 21.6767L115.344 16.5804C115.273 16.4385 115.173 16.3209 114.93 16.3209H114.688C114.471 16.3209 114.345 16.4385 114.274 16.5804L112.021 21.6524C110.398 20.7037 109.307 18.9846 109.307 17.0223C109.307 14.0464 111.816 11.5692 114.88 11.5692C117.945 11.5692 120.478 14.0464 120.478 17.0223C120.478 19.0008 119.358 20.732 117.702 21.6767Z" fill="#232322"/><path d="M144.672 24.7216L141.8 8.85273C141.775 8.66217 141.628 8.5 141.361 8.5H140.972C140.755 8.5 140.629 8.59325 140.558 8.73515L135.203 19.8806H135.132L129.772 8.73515C129.701 8.59325 129.554 8.5 129.358 8.5H128.969C128.702 8.5 128.555 8.66623 128.53 8.85273L125.633 24.7175C125.583 25.0499 125.779 25.2608 126.097 25.2608H128.288C128.505 25.2608 128.702 25.0702 128.727 24.9081L130.14 15.9601H130.211L134.521 25.2405C134.596 25.3824 134.718 25.5 134.935 25.5H135.374C135.592 25.5 135.738 25.3824 135.788 25.2405L140.048 15.9601H140.119L141.557 24.9081C141.608 25.0743 141.8 25.2608 142.021 25.2608H144.237C144.555 25.2608 144.747 25.0499 144.676 24.7175L144.672 24.7216Z" fill="#232322"/></svg>
-
-    <div class="header-meta">
-      <time class="timestamp" id="utc-clock" datetime="">0000-00-00 00:00:00Z</time>
-      <span class="readout" id="readout">SIG 0.42</span>
-    </div>
-  </header>
-
-  <main class="center">
-    <div class="mark-stage" id="mark-stage" aria-hidden="true">
-
-      <!-- Sounding pulse: a single line descends from the disc edge, touches
-           the seafloor at zero velocity, and returns as a wider, fainter echo.
-           One full continuous bounce per sounding phase. -->
-      <div class="pulse-line out-1" aria-hidden="true"></div>
-
-      <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
-        <g class="mark-rotating">
-          <mask id="cm-mask" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="7" y="7" width="66" height="66">
-            <path d="M72.1569 7.84302H7.84314V72.1567H72.1569V7.84302Z" fill="white"/>
-          </mask>
-          <g mask="url(#cm-mask)">
-            <path d="M39.9616 7.84302C22.0668 7.84302 7.84314 22.2304 7.84314 40.0843C7.84314 57.9381 22.0668 72.1567 39.9616 72.1567C57.8564 72.1567 72.1569 57.9534 72.1569 40.0843C72.1569 22.2151 57.841 7.84302 39.9616 7.84302ZM50.3298 57.6927L41.6666 38.4123C41.4055 37.8755 41.0368 37.4307 40.146 37.4307H39.2551C38.4563 37.4307 37.9955 37.8755 37.7344 38.4123L29.4551 57.6007C23.4953 54.0115 19.4863 47.508 19.4863 40.0843C19.4863 28.8259 28.7025 19.4542 39.9616 19.4542C51.2207 19.4542 60.5291 28.8259 60.5291 40.0843C60.5291 47.5694 56.4126 54.1189 50.3298 57.6927Z" fill="#232322"/>
-          </g>
-        </g>
-      </svg>
-    </div>
-
-    <div class="cta-stack">
-      <a class="login-cta" href="https://canvas.fathomsignal.com/connect">Connect &rarr;</a>
-      <a class="apply-cta" href="/apply.html">Apply &rarr;</a>
-    </div>
-  </main>
-
-  <footer class="footer">
-    <a class="footer-mission" href="/mission.html">MISSION &rarr;</a>
-    <span class="footer-text">&copy; 2026 Fathom Signal</span>
-    <span class="footer-text"><a href="mailto:team@fathomsignal.com">TEAM@FATHOMSIGNAL.COM</a></span>
-    <nav class="footer-text" aria-label="Site">
-      <a href="/privacy.html">PRIVACY</a> &middot; <a href="/terms.html">TERMS</a>
-    </nav>
-  </footer>
-
+<div class="site">
+<header class="site-bar">
+<a class="home" href="/" aria-label="Fathom home"><svg class="plain" viewBox="0 0 91.1 16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fathom"><path d="M9.76223 0.221329H0.436762C0.184935 0.221329 0 0.423571 0 0.644892V15.3551C0 15.5764 0.184935 15.7787 0.436762 15.7787H2.54581C2.77403 15.7787 2.98257 15.5803 2.98257 15.3551V9.73433H8.64081C8.86903 9.73433 9.07757 9.5359 9.07757 9.31076V7.49059C9.07757 7.26927 8.87296 7.06702 8.64081 7.06702H2.97864V2.88863H9.76223C10.0141 2.88863 10.199 2.69021 10.199 2.46507V0.644892C10.199 0.423571 10.0141 0.221329 9.76223 0.221329Z" fill="#181611"></path><path d="M18.3991 0.244217C18.3283 0.110661 18.2378 0 18.0095 0H17.7813C17.5767 0 17.4587 0.110661 17.3918 0.244217L10.2659 15.1987C10.1282 15.4887 10.3131 15.7749 10.6554 15.7749H12.6504C13.0163 15.7749 13.2248 15.5535 13.3153 15.3322L14.4368 12.932H21.2872L22.4086 15.3322C22.57 15.6451 22.7313 15.7749 23.0736 15.7749H25.0686C25.4109 15.7749 25.5958 15.4849 25.4581 15.1987L18.3991 0.244217ZM15.5582 10.467L17.8049 5.57882H17.8758L20.1658 10.467H15.5621H15.5582Z" fill="#181611"></path><path d="M35.3541 0.221329H25.3401C25.0883 0.221329 24.9033 0.419755 24.9033 0.644892V2.46507C24.9033 2.68639 25.0883 2.88863 25.3401 2.88863H28.846V15.3551C28.846 15.5764 29.0506 15.7787 29.2827 15.7787H31.4154C31.6436 15.7787 31.8522 15.5803 31.8522 15.3551V2.88863H35.3581C35.6099 2.88863 35.7948 2.69021 35.7948 2.46507V0.644892C35.7948 0.423571 35.6099 0.221329 35.3581 0.221329H35.3541Z" fill="#181611"></path><path d="M51.1877 0.221329H49.0787C48.8269 0.221329 48.6419 0.419755 48.6419 0.644892V6.5328H41.1737V0.644892C41.1737 0.423571 40.9888 0.221329 40.7369 0.221329H38.6043C38.3761 0.221329 38.1675 0.419755 38.1675 0.644892V15.3551C38.1675 15.5764 38.3721 15.7787 38.6043 15.7787H40.7369C40.9888 15.7787 41.1737 15.5803 41.1737 15.3551V9.223H48.6419V15.3551C48.6419 15.5764 48.8269 15.7787 49.0787 15.7787H51.1877C51.416 15.7787 51.6245 15.5803 51.6245 15.3551V0.644892C51.6245 0.423571 51.4199 0.221329 51.1877 0.221329Z" fill="#181611"></path><path fill-rule="evenodd" d="M62.941 0C58.3569 0 54.7133 3.5793 54.7133 8.02099C54.7133 12.4627 58.3569 16 62.941 16C67.525 16 71.1883 12.4665 71.1883 8.02099C71.1883 3.57548 67.525 0 62.941 0ZM57.7 8.02A5.257 5.131 0 1 0 68.214 8.02A5.257 5.131 0 1 0 57.7 8.02Z" fill="#181611"></path><path d="M90.9842 15.2674L88.281 0.331982C88.2574 0.152635 88.1197 0 87.8679 0H87.502C87.2973 0 87.1793 0.0877653 87.1124 0.221321L82.0719 10.7112H82.005L76.9606 0.221321C76.8937 0.0877653 76.756 0 76.5711 0H76.2052C75.9533 0 75.8156 0.156451 75.792 0.331982L73.0652 15.2635C73.018 15.5764 73.2029 15.7749 73.502 15.7749H75.5638C75.7684 15.7749 75.9533 15.5955 75.9769 15.4429L77.3069 7.02123H77.3738L81.4306 15.7558C81.5014 15.8893 81.6155 16 81.8201 16H82.2333C82.4379 16 82.5756 15.8893 82.6228 15.7558L86.6324 7.02123H86.6993L88.0528 15.4429C88.1 15.5993 88.281 15.7749 88.4896 15.7749H90.575C90.8741 15.7749 91.0551 15.5764 90.9882 15.2635L90.9842 15.2674Z" fill="#181611"></path></svg></a>
+<nav class="site-nav" aria-label="Site"><a href="/mission.html">Mission</a><a href="/how-it-works.html">How it works</a><a href="https://canvas.fathomsignal.com/apply">Apply</a><a href="https://canvas.fathomsignal.com/connect">Connect</a></nav>
+</header>
+<main class="site-main center" style="flex-direction: column; gap: 48px;">
+<div id="mark" style="position: relative; width: min(38vmin, 320px); height: min(38vmin, 320px);" aria-hidden="true"><div id="pulse" style="position: absolute; left: 50%; top: 88%; width: 56px; height: 1px; margin-left: -28px; background: var(--marine); opacity: 0; pointer-events: none; z-index: 1;"></div><svg id="dial" style="position: relative; z-index: 2; width: 100%; height: 100%; display: block;" viewBox="10 10 82 82" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M50.951 10C28.1352 10 10 28.3439 10 51.1076C10 73.8712 28.1352 92 50.951 92C73.7669 92 92 73.8908 92 51.1076C92 28.3244 73.7473 10 50.951 10ZM64.1705 73.5583L53.1249 48.9759C52.792 48.2914 52.3219 47.7243 51.1861 47.7243H50.0502C49.0318 47.7243 48.4442 48.2914 48.1113 48.9759L37.5553 73.441C29.9565 68.8648 24.845 60.5729 24.845 51.1076C24.845 36.7532 36.5957 24.8042 50.951 24.8042C65.3064 24.8042 77.1746 36.7532 77.1746 51.1076C77.1746 60.6511 71.926 69.0017 64.1705 73.5583Z" fill="#181611"></path></svg></div>
+<div style="position: relative; z-index: 3; background: var(--paper); width: 200px; max-width: 100%; display: flex; flex-direction: column; gap: 8px;">
+<a class="k p" href="https://canvas.fathomsignal.com/connect" style="width: 100%; flex: none; height: 40px; font-size: 12px;">Connect</a>
+<a class="k" href="https://canvas.fathomsignal.com/apply" style="width: 100%; height: 40px; font-size: 12px;">Apply</a>
+</div>
+<p style="position: relative; z-index: 3; background: var(--paper); margin: 0; font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); font-variant-numeric: tabular-nums;"><span id="clock">&nbsp;</span><span style="opacity: 0; transition: opacity 900ms ease;" id="readout" aria-hidden="true"> · <span id="readval">BRG 000°</span></span></p>
+</main>
+<footer id="foot" class="site-foot"><span>© 2026 Fathom Signal</span><a href="mailto:team@fathomsignal.com">team@fathomsignal.com</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></footer>
+</div>
 <script>
-  // ===== Live UTC timestamp =====
-  (function () {
-    var el = document.getElementById('utc-clock');
-    if (!el) return;
-    function pad(n) { return n < 10 ? '0' + n : '' + n; }
-    function tick() {
-      var d = new Date();
-      var s =
-        d.getUTCFullYear() + '-' +
-        pad(d.getUTCMonth() + 1) + '-' +
-        pad(d.getUTCDate()) + ' ' +
-        pad(d.getUTCHours()) + ':' +
-        pad(d.getUTCMinutes()) + ':' +
-        pad(d.getUTCSeconds()) + 'Z';
-      el.textContent = s;
-      el.setAttribute('datetime', d.toISOString());
-    }
-    tick();
-    setInterval(tick, 1000);
-  })();
-
-  // ===== Starfield: dense grain + parallax =====
-  (function () {
-    var sf = document.getElementById('starfield');
-    if (!sf) return;
-
-    // Generate a dense field of fine-grain dots. Density scaled to viewport.
-    function populate() {
-      // Clear any existing dots (in case of re-population on resize)
-      while (sf.firstChild) sf.removeChild(sf.firstChild);
-
-      var w = window.innerWidth;
-      var h = window.innerHeight;
-
-      // Set viewBox to match viewport so 1 svg unit = 1 px
-      sf.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-      sf.setAttribute('width', w);
-      sf.setAttribute('height', h);
-
-      // Density: ~1 dot per 800 px². This is film-grain territory: ~2500
-      // dots on a 1920x1080 desktop, ~450 on a 400x900 phone. At this
-      // density and the small sizes below, no individual dot is countable;
-      // the field reads as surface grain.
-      var area = w * h;
-      var count = Math.round(area / 800);
-
-      var svgNS = 'http://www.w3.org/2000/svg';
-      for (var i = 0; i < count; i++) {
-        var c = document.createElementNS(svgNS, 'circle');
-        // Edge-to-edge distribution. Texture covers the full surface.
-        var x = Math.round(Math.random() * w);
-        var y = Math.round(Math.random() * h);
-        // Radii 0.15 to 0.6 px, biased toward the smallest via squared
-        // random. Deeply sub-pixel — the dots render as soft anti-aliased
-        // specks rather than crisp circles. That's the texture quality.
-        var r = (0.15 + Math.pow(Math.random(), 2) * 0.45).toFixed(2);
-        c.setAttribute('cx', x);
-        c.setAttribute('cy', y);
-        c.setAttribute('r', r);
-        c.setAttribute('class', 'star');
-        // Low opacity so no single dot is salient.
-        c.setAttribute('opacity', (0.18 + Math.random() * 0.22).toFixed(2));
-        sf.appendChild(c);
-      }
-    }
-
-    populate();
-
-    // Repopulate on resize (debounced) so density adapts to viewport changes
-    var resizeTimer = null;
-    window.addEventListener('resize', function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(populate, 250);
-    });
-
-    // ----- Parallax -----
-    // Desktop: mouse position drives translation, max ~8px in each direction.
-    // With a dense textural field, small movements read clearly as surface
-    // motion. Mobile: tap position drives a brief translation that eases
-    // back to center.
-    var MAX_OFFSET = 8;        // px of travel in each axis
-    var currentX = 0;
-    var currentY = 0;
-    var rafPending = false;
-
-    function applyTransform(x, y) {
-      sf.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
-    }
-
-    function setTarget(x, y) {
-      currentX = x;
-      currentY = y;
-      if (!rafPending) {
-        rafPending = true;
-        requestAnimationFrame(function () {
-          applyTransform(currentX, currentY);
-          rafPending = false;
-        });
-      }
-    }
-
-    // Detect touch-capable vs mouse-driven environment.
-    var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-
-    if (!isTouch) {
-      // Desktop: mouse-driven continuous parallax.
-      sf.classList.add('tracking');
-      window.addEventListener('mousemove', function (e) {
-        // Normalize cursor position to -1..1 around viewport center
-        var nx = (e.clientX / window.innerWidth) * 2 - 1;
-        var ny = (e.clientY / window.innerHeight) * 2 - 1;
-        // Inverted: field moves OPPOSITE to cursor for parallax depth.
-        setTarget(-nx * MAX_OFFSET, -ny * MAX_OFFSET);
-      });
-      // Reset when mouse leaves the page
-      window.addEventListener('mouseleave', function () {
-        sf.classList.remove('tracking');
-        setTarget(0, 0);
-        setTimeout(function () { sf.classList.add('tracking'); }, 700);
-      });
-    } else {
-      // Mobile: tap triggers a brief offset, then eases back to center.
-      // The transition rule on .starfield (not .tracking) handles the
-      // 600ms ease-back automatically when we set target to 0.
-      window.addEventListener('touchstart', function (e) {
-        if (!e.touches || !e.touches[0]) return;
-        var t = e.touches[0];
-        var nx = (t.clientX / window.innerWidth) * 2 - 1;
-        var ny = (t.clientY / window.innerHeight) * 2 - 1;
-        setTarget(-nx * MAX_OFFSET, -ny * MAX_OFFSET);
-        // Ease back to center after a short hold
-        setTimeout(function () {
-          setTarget(0, 0);
-        }, 400);
-      }, { passive: true });
-    }
-  })();
-
-  // ===== Sounding travel =====
-  // The pulse descends to the bottom hairline: that rule is the seafloor.
-  // The distance cannot be a constant in the keyframe, because the mark is
-  // sized min(38vmin, 340px) and so scales with the viewport, while the
-  // hairline is pinned relative to the bottom of the page. Measure the gap
-  // between the pulse's origin and the rule, and hand it to CSS as
-  // --pulse-travel for @keyframes pulse-cycle to read.
-  (function () {
-    var stageEl = document.getElementById('mark-stage');
-    var floor = document.querySelector('.hairline-bottom');
-    var pulseLine = stageEl ? stageEl.querySelector('.pulse-line') : null;
-    if (!stageEl || !floor || !pulseLine) return;
-
-    function setTravel() {
-      var s = stageEl.getBoundingClientRect();
-      var f = floor.getBoundingClientRect();
-      // .pulse-line sits at top: 88% of the mark stage. Both it and the
-      // hairline are 1px, and the line comes to rest ON the rule rather
-      // than above it, so the target is the rule's own top edge and the
-      // two coincide exactly at the bottom of the bounce.
-      var origin = s.top + s.height * 0.88;
-      var travel = Math.round(f.top - origin);
-      document.documentElement.style.setProperty(
-        '--pulse-travel', (travel > 0 ? travel : 0) + 'px'
-      );
-    }
-
-    // Measured off the rendered box, so it has to wait for two things to
-    // settle. The mark's entry animation runs scale(0.96) -> scale(1) and
-    // getBoundingClientRect reports the transformed box, so measuring
-    // mid-animation reads about 4% short. And the web font changes the
-    // footer's height, which moves the rule: measuring before it loads reads
-    // about 2px short. Measure on whichever of these lands, and again after
-    // both must have.
-    var anims = stageEl.getAnimations ? stageEl.getAnimations() : [];
-    if (anims.length) {
-      Promise.all(anims.map(function (a) { return a.finished; }))
-        .then(setTravel)
-        .catch(setTravel);
-    } else {
-      // Reduced motion: no entry animation to wait on. This runs immediately
-      // and is the path where the font matters, so fonts.ready below is doing
-      // real work rather than belt and braces.
-      setTravel();
-    }
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(setTravel).catch(function () {});
-    }
-    setTimeout(setTravel, 2200);
-
-    // Throttled to a frame, deliberately not debounced. A debounce never
-    // settles during a continuous drag, so the travel stays pinned at its
-    // pre-drag value and the line ends up as much as 100px below the rule,
-    // floating in the footer, for as long as the drag lasts. Recomputing per
-    // frame holds it on the rule to within a pixel. Two rect reads a frame
-    // while the pointer is down is not a cost worth optimising against.
-    var rafPending = false;
-    window.addEventListener('resize', function () {
-      if (rafPending) return;
-      rafPending = true;
-      requestAnimationFrame(function () {
-        rafPending = false;
-        setTravel();
-      });
-    });
-  })();
-
-  // ===== Phase controller =====
-  // The page alternates between two modes:
-  //   SWEEP — mark rotates, bearing readout updates live
-  //   SOUND — mark holds at rest, depth readout displayed throughout
-  // Brief silences bracket each phase transition.
-
-  var stage = document.getElementById('mark-stage');
-  var rotator = stage ? stage.querySelector('.mark-rotating') : null;
-  var readout = document.getElementById('readout');
-  var freezeAnims = [];
-  var sigTimer = null;
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Phase timings (ms)
-  // First sweep is one full rotation; subsequent sweeps are three full
-  // rotations. Sweep duration is always a clean multiple of the 14s
-  // rotation period so the wedge naturally lands at rest when sweep ends.
-  var SWEEP_FIRST      = 14000;   // 1 rotation
-  var SWEEP_SUBSEQUENT = 42000;   // 3 rotations
-  var SILENCE_TO_SOUND = 2200;
-  // 7000 = the 6s pulse plus 1s of stillness after the line comes home,
-  // before the silence. The pulse used to be 5s inside a 6s phase, which
-  // gave the same 1s hold; the hold is deliberate, so the phase grew with
-  // the pulse rather than absorbing it.
-  var SOUND_DURATION   = 7000;
-  var SILENCE_TO_SWEEP = 2200;
-  var FREEZE_DURATION  = 1800;
-
-  // Depth value shown during the sound phase. A plausible-sounding number.
-  var DEPTH_READOUT    = 'DPT 142M';
-
-  var cycleIndex = 0;  // tracks which cycle we're on
-
-  function setPhase(name) {
-    if (!stage) return;
-    stage.classList.remove('phase-sweep', 'phase-sound', 'phase-silent');
-    stage.classList.add('phase-' + name);
+/* Home: the instrument cycle (Fathom Brand 3.0, Home exception, 2026-10-29).
+   Sweep: one turn every 14 s (one turn the first time, then three), readout BRG 000-359.
+   Silence 2.2 s. Sounding 7 s: a marine line drops to the footer rule and rises; DPT fades in when it reaches depth.
+   Silence 2.2 s, then again. Under reduced motion the mark holds still and the readout shows BRG 000°. */
+(function () {
+  var mark = document.getElementById('mark'), foot = document.getElementById('foot');
+  var dial = document.getElementById('dial'), pulse = document.getElementById('pulse');
+  var clock = document.getElementById('clock'), readout = document.getElementById('readout'), readval = document.getElementById('readval');
+  function p2(n) { return n < 10 ? '0' + n : '' + n; }
+  function utc() { var d = new Date(); return d.getUTCFullYear() + '-' + p2(d.getUTCMonth() + 1) + '-' + p2(d.getUTCDate()) + ' ' + p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()) + ':' + p2(d.getUTCSeconds()) + 'Z'; }
+  function tick() { clock.textContent = utc(); }
+  tick(); setInterval(tick, 1000);
+  function show(text, on) { if (text !== null) readval.textContent = text; readout.style.opacity = on ? '1' : '0'; }
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { show('BRG 000°', true); return; }
+  var travel = 140;
+  function measure() {
+    var a = mark.getBoundingClientRect(), b = foot.getBoundingClientRect();
+    var t = Math.round(b.top - (a.top + a.height * 0.88)); travel = t > 0 ? t : 0;
   }
-
-  function showReadout(visible) {
-    if (!readout) return;
-    if (visible) readout.classList.add('live');
-    else readout.classList.remove('live');
+  window.addEventListener('resize', measure); setTimeout(measure, 300);
+  function ease(x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; }
+  function pulseAt(p) {
+    var k;
+    if (p < 0.08) { k = ease(p / 0.08); return [0, 1, 0.7 * k]; }
+    if (p < 0.5) { k = ease((p - 0.08) / 0.42); return [travel * k, 1 + 0.3 * k, 0.7 - 0.2 * k]; }
+    if (p < 0.92) { k = ease((p - 0.5) / 0.42); return [travel * (1 - k), 1.3 + 0.65 * k, 0.5 - 0.36 * k]; }
+    k = (p - 0.92) / 0.08; return [0, 1.95 + 0.05 * k, 0.14 * (1 - k)];
   }
-
-  function setReadoutText(text) {
-    if (!readout) return;
-    readout.textContent = text;
+  var phase = 'silent', start = 0, lastBrg = 0, depthShown = false, cycle = 0;
+  function setPulse(y, x, o) { pulse.style.transform = 'translateY(' + y.toFixed(1) + 'px) scaleX(' + x.toFixed(3) + ')'; pulse.style.opacity = o.toFixed(3); }
+  function enter(ph) {
+    phase = ph; start = Date.now(); lastBrg = 0; depthShown = false;
+    dial.style.transform = 'rotate(0deg)'; setPulse(0, 1, 0);
+    if (ph === 'sweep') show('BRG 000°', true); else show(null, false);
   }
-
-  // SIGNAL: the sweep-phase readout. Deliberately not derived from the mark's
-  // rotation \u2014 the instrument is listening, not locating, so the value drifts
-  // independently of where the wedge happens to be pointing.
-  //
-  // Two sine waves of unrelated periods are summed so the number wanders
-  // without settling into an audible-looking beat; a single wave would visibly
-  // repeat. Sampled at 5Hz rather than per-frame because a real instrument
-  // reports at a sample rate, and a 60fps last digit reads as blur.
-  function startSignalLoop() {
-    stopSignalLoop();
-    if (reduceMotion) {
-      setReadoutText('SIG 0.42');
-      return;
+  function frame() {
+    var now = Date.now();
+    if (phase === 'sweep') {
+      var ang = ((now - start) / 14000) * 360 % 360;
+      dial.style.transform = 'rotate(' + ang.toFixed(2) + 'deg)';
+      if (now - lastBrg >= 200) { lastBrg = now; readval.textContent = 'BRG ' + ('00' + (Math.floor(ang) % 360)).slice(-3) + '°'; }
+    } else if (phase === 'sound') {
+      var p = Math.min((now - start) / 6000, 1), v = pulseAt(p);
+      setPulse(v[0], v[1], v[2]);
+      if (p >= 0.5 && !depthShown) { depthShown = true; show('DPT 142M', true); }
     }
-    var t0 = Date.now();
-    function tick() {
-      var t = (Date.now() - t0) / 1000;
-      var v = 0.42 + Math.sin(t / 3.1) * 0.06 + Math.sin(t / 1.13) * 0.025;
-      setReadoutText('SIG ' + v.toFixed(2));
-    }
-    tick();
-    sigTimer = setInterval(tick, 200);
+    requestAnimationFrame(frame);
   }
-
-  function stopSignalLoop() {
-    if (sigTimer) {
-      clearInterval(sigTimer);
-      sigTimer = null;
-    }
-  }
-
-  function readRotation(el) {
-    if (!el) return 0;
-    try {
-      var matrix = new DOMMatrixReadOnly(getComputedStyle(el).transform);
-      var angle = Math.atan2(matrix.b, matrix.a) * (180 / Math.PI);
-      if (angle < 0) angle += 360;
-      return angle;
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  function freezeRotatorAtZero() {
-    if (!rotator) return;
-    // Read the live rotation before removing the CSS animation.
-    var markAngle = readRotation(rotator);
-
-    // Remove the CSS-driven sweep so the WAAPI freeze can take over.
-    stage.classList.remove('phase-sweep');
-
-    // Sweep is a clean multiple of the rotation period, so in normal
-    // operation markAngle is within a few degrees of 0 or 360 at this
-    // moment. We handle that common case by snapping cleanly to rest
-    // without animation. Only when we somehow have significant travel do
-    // we run a scaled freeze animation.
-    var SNAP_THRESHOLD = 12; // degrees
-    var fromZero  = Math.min(markAngle, 360 - markAngle); // distance to 0/360
-    var nearRest  = fromZero <= SNAP_THRESHOLD;
-
-    freezeAnims = [];
-
-    if (nearRest) {
-      // Snap directly to rest. No animation, no chance of an accelerated spin.
-      freezeAnims.push(rotator.animate(
-        [
-          { transform: 'rotate(0deg)' },
-          { transform: 'rotate(0deg)' }
-        ],
-        { duration: 1, fill: 'forwards' }
-      ));
-    } else {
-      // Defensive path: meaningful distance to cover. Always go clockwise
-      // (forward) and scale the duration to travel.
-      var markEnd = 360;
-      var travel = markEnd - markAngle;
-      var duration = Math.min(FREEZE_DURATION, Math.max(200, travel * 6));
-      freezeAnims.push(rotator.animate(
-        [
-          { transform: 'rotate(' + markAngle + 'deg)' },
-          { transform: 'rotate(' + markEnd   + 'deg)' }
-        ],
-        {
-          duration: duration,
-          easing: 'cubic-bezier(0.33, 0, 0.18, 1)',
-          fill: 'forwards'
-        }
-      ));
-    }
-  }
-
-  function resumeSweep() {
-    // Cancel any lingering WAAPI freeze animations so the CSS sweep can take
-    // over cleanly without transform conflicts.
-    freezeAnims.forEach(function (a) {
-      try { a.cancel(); } catch (e) {}
-    });
-    freezeAnims = [];
-    setPhase('sweep');
-  }
-
   function runCycle() {
-    // First sweep is 1 rotation; every subsequent sweep is 3 rotations.
-    var sweepDuration = (cycleIndex === 0) ? SWEEP_FIRST : SWEEP_SUBSEQUENT;
-    cycleIndex++;
-
-    // SWEEP — show live bearing readout
-    resumeSweep();
-    showReadout(true);
-    startSignalLoop();
-
+    var sweep = cycle === 0 ? 14000 : 42000; cycle++;
+    enter('sweep');
     setTimeout(function () {
-      // Transition: ease sweep to a stop at wedge rest
-      stopSignalLoop();
-      freezeRotatorAtZero();
-      // Brief silence during the freeze transition
-      showReadout(false);
-
+      enter('silent');
       setTimeout(function () {
-        // SOUND — lock the readout to depth
-        setPhase('sound');
-        setReadoutText(DEPTH_READOUT);
-        showReadout(true);
-
-        setTimeout(function () {
-          // Silence before next sweep cycle
-          setPhase('silent');
-          showReadout(false);
-          setTimeout(function () {
-            runCycle();
-          }, SILENCE_TO_SWEEP);
-        }, SOUND_DURATION);
-      }, SILENCE_TO_SOUND);
-    }, sweepDuration);
+        measure(); enter('sound');
+        setTimeout(function () { enter('silent'); setTimeout(runCycle, 2200); }, 7000);
+      }, 2200);
+    }, sweep);
   }
-
-  // Kick off the page after initial fade-in, matching the prior 2s delay
-  window.addEventListener('load', function () {
-    setTimeout(function () {
-      runCycle();
-    }, 2000);
-  });
+  requestAnimationFrame(frame);
+  setTimeout(runCycle, 2000);
+})();
 </script>
-
 </body>
 </html>

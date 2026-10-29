@@ -12,13 +12,43 @@
     },
     {
       "source": "/faq.html",
-      "destination": "/mission.html",
+      "destination": "/how-it-works.html",
       "permanent": true
     },
     {
       "source": "/faq",
+      "destination": "/how-it-works.html",
+      "permanent": true
+    },
+    {
+      "source": "/how-it-works",
+      "destination": "/how-it-works.html",
+      "permanent": true
+    },
+    {
+      "source": "/mission",
       "destination": "/mission.html",
       "permanent": true
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html",
+      "permanent": true
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html",
+      "permanent": true
+    },
+    {
+      "source": "/apply.html",
+      "destination": "https://canvas.fathomsignal.com/apply",
+      "permanent": false
+    },
+    {
+      "source": "/apply",
+      "destination": "https://canvas.fathomsignal.com/apply",
+      "permanent": false
     },
     {
       "source": "/login.html",
@@ -27,6 +57,11 @@
     },
     {
       "source": "/login",
+      "destination": "https://canvas.fathomsignal.com/connect",
+      "permanent": false
+    },
+    {
+      "source": "/connect",
       "destination": "https://canvas.fathomsignal.com/connect",
       "permanent": false
     }
