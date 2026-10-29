@@ -22,13 +22,13 @@
     },
     {
       "source": "/login.html",
-      "destination": "https://app.fathomsignal.com/login",
-      "permanent": true
+      "destination": "https://canvas.fathomsignal.com/connect",
+      "permanent": false
     },
     {
       "source": "/login",
-      "destination": "https://app.fathomsignal.com/login",
-      "permanent": true
+      "destination": "https://canvas.fathomsignal.com/connect",
+      "permanent": false
     }
   ]
 }
