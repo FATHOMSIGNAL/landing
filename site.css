@@ -1,6 +1,6 @@
 /* Fathom website. Fathom Brand 3.0 (2026-10-29), built from the Fathom Website Revs design canvas.
    Tokens and keys from the Team Canvas design system; the shell is shared with the app's signed-out pages. */
-:root{--paper:#faf8f4;--ink:#181611;--ink-2:#312e29;--ink-3:#4d4a44;--muted:#8f8c86;--rule:#b5b2ab;--rule-light:#d4d1ca;--rule-faint:#e9e5de;--rule-quiet:#e2dfd9;--marine:#055c83;--marine-wash:#c2d9e6;--oxide:#b64536;--verdigris:#11794c;--say:'Literata',Georgia,'Times New Roman',serif;--mono:'IBM Plex Mono',Consolas,'Courier New',monospace}
+:root{--paper:#faf8f4;--ink:#181611;--ink-2:#312e29;--ink-3:#4d4a44;--muted:#8f8c86;--rule:#b5b2ab;--rule-light:#d4d1ca;--rule-faint:#e9e5de;--rule-quiet:#e2dfd9;--marine:#055c83;--marine-wash:#c2d9e6;--oxide:#b64536;--verdigris:#11794c;--say:'Literata','Literata Fallback',Georgia,'Times New Roman',serif;--mono:'IBM Plex Mono','IBM Plex Mono Fallback',Consolas,'Courier New',monospace}
 html,body{margin:0;background:var(--paper)}
 .k{height:48px;box-sizing:border-box;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;font:400 12.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:0;cursor:pointer}
 .k.p{background:var(--ink);color:var(--paper);flex:1}
@@ -29,6 +29,11 @@ html,body{margin:0;background:var(--paper)}
 .site-nav a{font:400 11px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);text-decoration:none;padding:12px 0}
 .site-nav a:hover{color:var(--ink)}
 .site-nav a.on{color:var(--ink);text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px}
+/* Connected (NDWebConnected): the head script sets html.fs-on from the app's fs_connected marker before first paint.
+   Apply and Connect give way to Your teams and an outlined Disconnect; signed out, the page is as it was. */
+html:not(.fs-on) .c-in,html.fs-on .c-out{display:none}
+.site-nav a.c-in{color:var(--ink)}
+.site-nav a.dc{font-weight:600;border:1px solid var(--ink);border-radius:3px;padding:9px 14px;margin-left:4px}
 .site-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px;font:400 11px/1.5 var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
 .site-meta span+span{letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 
@@ -62,6 +67,7 @@ ul.pts li{padding:14px 0;border-bottom:1px solid var(--rule-light);font:400 17px
 @media (max-width:640px){
   .site-bar{padding:0 20px}
   .site-nav{gap:0 20px}
+  .site-nav a.dc{margin:0 0 10px}
   .site-main{padding:48px 20px 64px}
   .pt{font-size:34px}
   .lead{font-size:19px}
