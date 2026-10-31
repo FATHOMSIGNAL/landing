@@ -1,0 +1,52 @@
+/* Written by scripts/fonts-css.mjs from the files beside it; do not edit by hand.
+   Literata and IBM Plex Mono, SIL Open Font License 1.1 (OFL-*.txt). */
+
+@font-face {
+  font-family: "Literata";
+  src: url("/fonts/Literata-roman.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Literata";
+  src: url("/fonts/Literata-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Literata Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT");
+  size-adjust: 118.07%;
+  ascent-override: 99.69%;
+  descent-override: 26.09%;
+  line-gap-override: 0.00%;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/IBMPlexMono-400.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/IBMPlexMono-600.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono Fallback";
+  src: local("Courier New"), local("CourierNewPSMT");
+  size-adjust: 99.98%;
+  ascent-override: 102.52%;
+  descent-override: 27.50%;
+  line-gap-override: 0.00%;
+}
