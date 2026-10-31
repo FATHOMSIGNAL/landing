@@ -12,6 +12,10 @@ if (/(^|;\s*)fs_connected=1(;|$)/.test(document.cookie)) {
     if (home) { home.href = 'https://canvas.fathomsignal.com/teams'; home.setAttribute('aria-label', 'Your teams'); }
   });
 }
+/* Back can bring a page from the browser's memory as it was drawn (iOS Safari, after Connect), so the marker is read again then. */
+addEventListener('pageshow', function (e) {
+  if (e.persisted && /(^|;\s*)fs_connected=1(;|$)/.test(document.cookie) !== document.documentElement.classList.contains('fs-on')) location.reload();
+});
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy · Fathom</title>
