@@ -1,0 +1,3 @@
+# The names check is repository tooling, never served (FINDINGS H167).
+.github
+scripts

@@ -1,0 +1,4 @@
+{
+  "about": "The canary for the guarded-names check (HANDOFF 2026-09-24 build process v2, step 2; Pieter in session 2026-09-24). The term is made up and harmless, and it is on the vault's guarded list so .github/guarded-names.json carries its hash. It is stored here ROT13-encoded so this file does not itself trip the check it tests. scripts/guarded-canary.mjs decodes it, plants it in a scratch repository, and fails unless the real check catches it in every place a name can arrive.",
+  "rot13": "Dhbeinggyr"
+}
