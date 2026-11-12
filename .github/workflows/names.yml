@@ -1,0 +1,46 @@
+# THE GUARDED-NAMES CHECK ON THE PUBLIC WEBSITE (FINDINGS H167), the same
+# check ping-app runs. The local git hook is skipped by cloud sessions and
+# connector pushes; this runs on GitHub for every pull request, every edit of
+# its text, and every push to main. The hashes in .github/guarded-names.json
+# are written by scripts/guarded-names.mjs --write from the vault's list; the
+# salt is the secret GUARDED_SALT.
+
+name: Names
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  guarded-names:
+    name: guarded names
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: No guarded name in the added lines, file names, commit messages or pull request text
+        env:
+          GUARDED_SALT: ${{ secrets.GUARDED_SALT }}
+          PR_TEXT: ${{ github.event.pull_request.title }} ${{ github.event.pull_request.body }}
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: node scripts/guarded-names.mjs --check "$BASE"
+      # THE CANARY (HANDOFF 2026-09-24 build process v2, step 2). The same
+      # check, run over a scratch repository with a made-up guarded term
+      # planted in each place a name can arrive. If the check above was
+      # weakened or the hash file lost the canary, this step turns the same
+      # required check red. It runs even when the step above failed.
+      - name: The canary, caught in every place, and a clean branch passes
+        if: always()
+        env:
+          GUARDED_SALT: ${{ secrets.GUARDED_SALT }}
+        run: node scripts/guarded-canary.mjs
